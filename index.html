@@ -1,0 +1,233 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>The SHI(T) App — Build Progress</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap');
+  :root{
+    --cream:#F5F1E3; --card:#FBF8EE; --ink:#1F1F1F; --inkSoft:#4A4A44;
+    --yellow:#F2E114; --yellowEdge:#D9C800; --muted:#9A9485; --line:#D8D2BE;
+    --done:#3E8E5A; --active:#C98A1B; --blocked:#9C3A2E; --todo:#B8B2A0;
+  }
+  *{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+  body{font-family:'Montserrat',system-ui,sans-serif;background:var(--cream);color:var(--ink);
+    line-height:1.5;padding:24px 16px 80px}
+  .wrap{max-width:760px;margin:0 auto}
+
+  /* header */
+  .top{display:flex;align-items:center;gap:14px;margin-bottom:6px}
+  .logo{width:48px;height:48px;border-radius:50%;background:var(--yellow);
+    display:flex;align-items:center;justify-content:center;box-shadow:inset 0 0 0 3px var(--ink);flex-shrink:0}
+  .logo span{font-weight:800;font-size:15px;letter-spacing:.5px}
+  h1{font-size:24px;font-weight:900;letter-spacing:-.5px;line-height:1.1}
+  .sub{font-size:13px;color:var(--muted);font-weight:600;margin-top:2px}
+
+  /* overall bar */
+  .overall{background:var(--yellow);border:2.5px solid var(--ink);border-radius:16px;
+    padding:18px 20px;margin:22px 0 10px}
+  .overall .row{display:flex;justify-content:space-between;align-items:baseline;margin-bottom:12px}
+  .overall .label{font-weight:800;font-size:13px;text-transform:uppercase;letter-spacing:.8px}
+  .overall .pct{font-weight:900;font-size:30px;line-height:1}
+  .track{height:14px;background:rgba(31,31,31,.12);border:1.5px solid var(--ink);
+    border-radius:8px;overflow:hidden}
+  .fill{height:100%;background:var(--ink);border-radius:6px;transition:width .6s cubic-bezier(.4,1.2,.5,1)}
+  .updated{font-size:12px;color:var(--muted);font-weight:600;margin-bottom:26px;text-align:right}
+
+  /* legend */
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin-bottom:24px;font-size:12px;font-weight:700;color:var(--inkSoft)}
+  .legend span{display:flex;align-items:center;gap:6px}
+  .chip{width:11px;height:11px;border-radius:3px;border:1.5px solid var(--ink)}
+
+  /* phases */
+  .phase{margin-bottom:22px;border:1px solid var(--line);border-radius:16px;background:var(--card);overflow:hidden}
+  .phase-head{display:flex;align-items:center;gap:12px;padding:15px 18px;cursor:pointer;user-select:none}
+  .phase-head:hover{background:#F6F1E0}
+  .phase-n{width:26px;height:26px;border-radius:50%;background:var(--ink);color:var(--yellow);
+    font-weight:800;font-size:12px;display:flex;align-items:center;justify-content:center;flex-shrink:0}
+  .phase-title{font-weight:800;font-size:16px;flex:1}
+  .phase-pct{font-weight:800;font-size:13px;color:var(--inkSoft)}
+  .phase-mini{width:54px;height:7px;background:rgba(31,31,31,.1);border-radius:4px;overflow:hidden;flex-shrink:0}
+  .phase-mini i{display:block;height:100%;background:var(--ink);border-radius:4px}
+  .tasks{padding:4px 18px 14px;display:none}
+  .phase.open .tasks{display:block}
+  .phase-head .arrow{transition:transform .2s;color:var(--muted);font-size:13px}
+  .phase.open .arrow{transform:rotate(90deg)}
+
+  .task{display:flex;align-items:flex-start;gap:11px;padding:9px 0;border-top:1px solid var(--line)}
+  .task:first-child{border-top:none}
+  .dot{width:18px;height:18px;border-radius:5px;border:2px solid;flex-shrink:0;margin-top:1px;
+    display:flex;align-items:center;justify-content:center}
+  .dot svg{width:11px;height:11px}
+  .t-done .dot{background:var(--done);border-color:var(--done)}
+  .t-active .dot{background:var(--active);border-color:var(--active)}
+  .t-blocked .dot{background:var(--blocked);border-color:var(--blocked)}
+  .t-todo .dot{background:transparent;border-color:var(--todo)}
+  .t-label{font-size:14px;font-weight:600;color:var(--ink)}
+  .t-done .t-label{color:var(--muted);text-decoration:line-through}
+  .t-note{font-size:12px;font-weight:600;margin-top:2px}
+  .t-active .t-note{color:var(--active)}
+  .t-blocked .t-note{color:var(--blocked)}
+  .t-meta{margin-left:auto;font-size:10px;font-weight:800;text-transform:uppercase;letter-spacing:.5px;
+    padding:3px 7px;border-radius:5px;flex-shrink:0;align-self:center}
+  .t-active .t-meta{background:rgba(201,138,27,.15);color:var(--active)}
+  .t-blocked .t-meta{background:rgba(156,58,46,.12);color:var(--blocked)}
+
+  .foot{text-align:center;font-size:12px;color:var(--muted);font-weight:600;margin-top:30px;line-height:1.6}
+  .foot b{color:var(--inkSoft)}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="top">
+    <div class="logo"><span>SHI</span></div>
+    <div>
+      <h1>The SHI(T) App — Build Progress</h1>
+      <div class="sub">Live status for the State of Happiness Institute</div>
+    </div>
+  </div>
+
+  <div class="overall">
+    <div class="row">
+      <span class="label">Overall progress</span>
+      <span class="pct" id="overallPct">0%</span>
+    </div>
+    <div class="track"><div class="fill" id="overallFill" style="width:0%"></div></div>
+  </div>
+  <div class="updated" id="updated"></div>
+
+  <div class="legend">
+    <span><i class="chip" style="background:var(--done);border-color:var(--done)"></i> Done</span>
+    <span><i class="chip" style="background:var(--active);border-color:var(--active)"></i> In progress</span>
+    <span><i class="chip" style="background:var(--blocked);border-color:var(--blocked)"></i> Blocked</span>
+    <span><i class="chip" style="background:transparent"></i> To do</span>
+  </div>
+
+  <div id="phases"></div>
+
+  <div class="foot">
+    Updated as the build progresses · <b>The SHI(T) App</b><br/>
+    Design · Build · Test · Ship — iOS &amp; Android
+  </div>
+</div>
+
+<script>
+/* ====================================================================
+   EDIT HERE — this is the only part you touch to update status.
+   status options:  "done" | "active" | "blocked" | "todo"
+   Change a status, save, push to GitHub. The page recalculates
+   every percentage automatically.
+   ==================================================================== */
+
+const LAST_UPDATED = "11 June 2026";
+
+const PHASES = [
+  {
+    title: "Foundation",
+    tasks: [
+      { label: "Project setup (React Native / Expo)", status: "todo" },
+      { label: "Brand system — colours, type, components", status: "active", note: "Matching the checklist + website" },
+      { label: "Navigation shell", status: "todo" },
+    ],
+  },
+  {
+    title: "The Daily Loop",
+    tasks: [
+      { label: "Welcome + onboarding flow", status: "active", note: "Prototype built, converting to app" },
+      { label: "Fart-sound intro", status: "todo" },
+      { label: "Daily checklist + domain add-ons", status: "active", note: "Prototype built" },
+      { label: "Streak engine (63-day chain)", status: "todo" },
+      { label: "Carry-over / make-up logic", status: "todo" },
+      { label: "Morning + evening notifications", status: "todo" },
+      { label: "Local storage (offline, no account)", status: "todo" },
+    ],
+  },
+  {
+    title: "The SHI(T) Test",
+    tasks: [
+      { label: "48-question test UI (1–7 scale)", status: "todo", note: "Question bank ready" },
+      { label: "Scoring + zones", status: "blocked", note: "Awaiting clinical spec from Institute" },
+      { label: "Results screen", status: "blocked", note: "Depends on scoring" },
+      { label: "Crisis / gentle check-in trigger", status: "blocked", note: "Clinical sign-off needed" },
+      { label: "Returning-user comparison", status: "todo" },
+    ],
+  },
+  {
+    title: "Content & Edges",
+    tasks: [
+      { label: "Inline ebook reader (“why this is on the list”)", status: "todo" },
+      { label: "Fart character roster (63 days)", status: "todo" },
+      { label: "Weekly messages + day-63 celebration", status: "todo" },
+      { label: "Settings, privacy, share cards", status: "todo" },
+      { label: "Crisis / support resources screen", status: "todo" },
+      { label: "Accessibility (VoiceOver / TalkBack)", status: "todo" },
+    ],
+  },
+  {
+    title: "Ship",
+    tasks: [
+      { label: "Apple Developer account setup (org)", status: "todo" },
+      { label: "Google Play Console setup (org)", status: "todo" },
+      { label: "Store listings + optimisation", status: "todo" },
+      { label: "Submit to both stores", status: "todo" },
+      { label: "Code handover via GitHub", status: "todo" },
+    ],
+  },
+];
+
+/* ====================================================================
+   No need to edit below this line.
+   ==================================================================== */
+
+const WEIGHT = { done: 1, active: 0.5, blocked: 0, todo: 0 };
+const TICK = '<svg viewBox="0 0 24 24" fill="none"><path d="M5 13l4 4L19 7" stroke="#fff" stroke-width="3.5" stroke-linecap="round" stroke-linejoin="round"/></svg>';
+const BLOCK = '<svg viewBox="0 0 24 24" fill="none"><path d="M6 12h12" stroke="#fff" stroke-width="3.5" stroke-linecap="round"/></svg>';
+
+function pct(tasks){
+  if(!tasks.length) return 0;
+  const sum = tasks.reduce((a,t)=>a+(WEIGHT[t.status]??0),0);
+  return Math.round((sum/tasks.length)*100);
+}
+
+const phasesEl = document.getElementById('phases');
+let allTasks = [];
+
+PHASES.forEach((ph, i) => {
+  allTasks = allTasks.concat(ph.tasks);
+  const p = pct(ph.tasks);
+  const open = ph.tasks.some(t => t.status==='active'||t.status==='blocked') ? 'open' : '';
+  const div = document.createElement('div');
+  div.className = 'phase ' + open;
+  div.innerHTML = `
+    <div class="phase-head">
+      <div class="phase-n">${i+1}</div>
+      <div class="phase-title">${ph.title}</div>
+      <div class="phase-mini"><i style="width:${p}%"></i></div>
+      <div class="phase-pct">${p}%</div>
+      <div class="arrow">▶</div>
+    </div>
+    <div class="tasks">
+      ${ph.tasks.map(t => `
+        <div class="task t-${t.status}">
+          <div class="dot">${t.status==='done'?TICK:t.status==='blocked'?BLOCK:''}</div>
+          <div>
+            <div class="t-label">${t.label}</div>
+            ${t.note?`<div class="t-note">${t.note}</div>`:''}
+          </div>
+          ${t.status==='active'?'<div class="t-meta">In progress</div>':
+            t.status==='blocked'?'<div class="t-meta">Blocked</div>':''}
+        </div>
+      `).join('')}
+    </div>`;
+  div.querySelector('.phase-head').addEventListener('click', () => div.classList.toggle('open'));
+  phasesEl.appendChild(div);
+});
+
+const overall = pct(allTasks);
+document.getElementById('overallPct').textContent = overall + '%';
+document.getElementById('overallFill').style.width = overall + '%';
+document.getElementById('updated').textContent = 'Last updated: ' + LAST_UPDATED;
+</script>
+</body>
+</html>
