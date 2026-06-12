@@ -1,0 +1,388 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>The SHI(T) App — First-run Flow</title>
+<style>html,body{margin:0;padding:0;background:#D9D2C2;}</style>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head><body><div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState, useRef, useEffect } = React;
+
+/* ------------------------------------------------------------------
+   THE SHI(T) APP — First-run flow
+   Welcome → fart moment → onboarding → commitment
+   Filter for every screen: does this create RELIEF (not pressure)
+   and AGENCY (more capable, not less)? Tone: not too serious,
+   a bit funny, quiet realisation. Brand matched to the checklist.
+-------------------------------------------------------------------*/
+
+const C = {
+  cream: "#F5F1E3",
+  card: "#FBF8EE",
+  ink: "#1F1F1F",
+  inkSoft: "#4A4A44",
+  yellow: "#F2E114",
+  yellowEdge: "#D9C800",
+  muted: "#9A9485",
+  line: "#D8D2BE",
+};
+
+const STEPS = ["welcome", "about", "instructions", "commitment", "done"];
+
+function App() {
+  const [step, setStep] = useState("welcome");
+  const go = (s) => setStep(s);
+
+  return (
+    <div style={s.frame}>
+      <style>{css}</style>
+      <div style={s.phone}>
+        {step === "welcome" && <Welcome onNext={() => go("about")} />}
+        {step === "about" && <About onNext={() => go("instructions")} onBack={() => go("welcome")} />}
+        {step === "instructions" && <Instructions onNext={() => go("commitment")} onBack={() => go("about")} />}
+        {step === "commitment" && <Commitment onNext={() => go("done")} onBack={() => go("instructions")} />}
+        {step === "done" && <Done onRestart={() => go("welcome")} />}
+      </div>
+      <Caption step={step} />
+    </div>
+  );
+}
+
+/* ---------------- WELCOME ----------------
+   The tone-setter. Fart first (disarm), then the real promise.
+   Relief: "we're all in this together." Agency: "one day at a time." */
+function Welcome({ onNext }) {
+  const [farted, setFarted] = useState(false);
+
+  function start() {
+    setFarted(true);
+    playFart();
+    setTimeout(onNext, 950); // let the moment land
+  }
+
+  return (
+    <div style={{ ...s.screen, justifyContent: "center", textAlign: "center" }}>
+      <div style={s.logoBig}><span style={s.logoBigText}>SHI</span></div>
+      <h1 style={s.welcomeH}>We're all in this together.</h1>
+      <p style={s.welcomeSub}>Let's improve your shit, one day at a time.</p>
+
+      <button style={{ ...s.cta, ...(farted ? s.ctaFarted : {}) }} onClick={start} disabled={farted}>
+        {farted ? "💨  ...there it is." : "I'm ready, let's go"}
+      </button>
+      <p style={s.welcomeFoot}>
+        Fair warning: this one opens with a fart. The science is real even if the name isn't.
+      </p>
+    </div>
+  );
+}
+
+/* ---------------- ABOUT YOU ----------------
+   The 12 fields, but framed for relief not interrogation.
+   Only name is required. Everything else explicitly skippable. */
+function About({ onNext, onBack }) {
+  const [name, setName] = useState("");
+  const [showMore, setShowMore] = useState(false);
+
+  const selects = [
+    ["Age", ["Under 18","18–24","25–34","35–44","45–54","55–64","65+"]],
+    ["Gender", ["Male","Female","Non-binary","I use another term","Prefer not to say"]],
+    ["Relationship status", ["Single","In a relationship","Married or de facto","Separated / Divorced","Widowed","Prefer not to say"]],
+    ["Country", ["Australia","New Zealand","United Kingdom","United States","Canada","Other"]],
+    ["Area type", ["Capital / Major city","Regional city or town","Small town","Rural or remote"]],
+    ["Employment", ["Full-time","Part-time or casual","Self-employed","Unemployed","Student","Homemaker / carer","Retired","Prefer not to say"]],
+    ["Living situation", ["Alone","With a partner","Partner and children","Children only","With family","With housemates","Other"]],
+    ["Dependent children", ["No","Yes — 1","Yes — 2","Yes — 3 or more"]],
+    ["Household income", ["Under $25k","$25k–$50k","$50k–$75k","$75k–$100k","$100k–$150k","$150k–$200k","$200k+","Prefer not to say"]],
+    ["General health", ["Excellent","Good","Fair","Poor"]],
+  ];
+
+  return (
+    <div style={s.screen}>
+      <ProgressDots active={1} />
+      <h1 style={s.h1}>First, what should we call you?</h1>
+      <p style={s.lede}>That's the only thing we actually need. The rest helps the research, but skip anything you like — no judgement.</p>
+
+      <label style={s.label}>Your name</label>
+      <input
+        style={s.input}
+        value={name}
+        onChange={(e) => setName(e.target.value)}
+        placeholder="First name, nickname, whatever feels right"
+      />
+
+      <label style={s.label}>Email <span style={s.optional}>— optional, for the occasional uncomfortable truth</span></label>
+      <input style={s.input} placeholder="you@email.com" />
+
+      <button style={s.disclosure} onClick={() => setShowMore((v) => !v)}>
+        {showMore ? "Hide the optional bits" : "A few optional questions for the research →"}
+      </button>
+
+      {showMore && (
+        <div style={s.moreWrap}>
+          <p style={s.researchNote}>
+            None of this is ever linked to you personally. We only ever see patterns across thousands of people. Answer what you want.
+          </p>
+          {selects.map(([labelText, opts]) => (
+            <div key={labelText} style={{ marginBottom: 12 }}>
+              <label style={s.labelSm}>{labelText}</label>
+              <select style={s.select} defaultValue="">
+                <option value="">Select{labelText === "Prefer not to say" ? "" : " (or skip)"}</option>
+                {opts.map((o) => <option key={o}>{o}</option>)}
+              </select>
+            </div>
+          ))}
+        </div>
+      )}
+
+      <div style={s.navRow}>
+        <button style={s.ghost} onClick={onBack}>Back</button>
+        <button
+          style={{ ...s.next, opacity: name ? 1 : 0.45, pointerEvents: name ? "auto" : "none" }}
+          onClick={onNext}
+        >
+          Continue
+        </button>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- INSTRUCTIONS ----------------
+   Sets the 1–7 scale and 14-day window. Agency: "no wrong answers." */
+function Instructions({ onNext, onBack }) {
+  return (
+    <div style={s.screen}>
+      <ProgressDots active={2} />
+      <div style={s.realBadge}>SHIT IS ABOUT TO GET REAL</div>
+      <h1 style={s.h1}>Answer for the last 14 days.</h1>
+      <p style={s.lede}>
+        For each statement, use the 1–7 scale to show how true it's felt for you lately.
+      </p>
+
+      <div style={s.scaleCard}>
+        <div style={s.scaleRow}>
+          <span style={s.scaleEnd}>1<br/><span style={s.scaleEndLabel}>Not at all</span></span>
+          <div style={s.scaleDots}>
+            {[1,2,3,4,5,6,7].map(n => (
+              <div key={n} style={{ ...s.scaleDot, background: n === 4 ? C.yellow : "transparent", borderColor: n === 4 ? C.ink : C.line }}>{n}</div>
+            ))}
+          </div>
+          <span style={s.scaleEnd}>7<br/><span style={s.scaleEndLabel}>Completely</span></span>
+        </div>
+      </div>
+
+      <div style={s.tipBox}>
+        <strong style={{ color: C.ink }}>Tip:</strong> A 7 isn't a trophy — it's a truth. If you're unsure, pick the number that feels real, not ideal.
+      </div>
+      <p style={s.lede}>No wrong answers. Just honesty. It takes about 8 minutes.</p>
+
+      <div style={s.navRow}>
+        <button style={s.ghost} onClick={onBack}>Back</button>
+        <button style={s.next} onClick={onNext}>I'm ready</button>
+      </div>
+    </div>
+  );
+}
+
+/* ---------------- COMMITMENT ----------------
+   The Four Agreements. This is the agency screen — it reframes the
+   whole thing as something they're doing FOR themselves, privately. */
+function Commitment({ onNext, onBack }) {
+  const [name, setName] = useState("");
+  const agreements = [
+    ["Be impeccable with your word.", "You committed to 63 days. That means something."],
+    ["Don't take anything personally.", "Your score isn't a verdict on you. The data is just data."],
+    ["Don't make assumptions.", "You don't know yet what 63 days will do. That's why you're here."],
+    ["Always do your best.", "Not perfect. Not every item every day. Just your best — which changes day to day, and that's fine."],
+  ];
+  return (
+    <div style={s.screen}>
+      <ProgressDots active={3} />
+      <h1 style={s.h1}>Before we start.</h1>
+      <p style={s.lede}>
+        Four old agreements, borrowed from a small book that sold 50 million copies because it was true. Read them as a commitment to yourself — not rules for an app.
+      </p>
+
+      <div style={s.agList}>
+        {agreements.map(([t, d], i) => (
+          <div key={i} style={s.agItem}>
+            <div style={s.agNum}>{i + 1}</div>
+            <div>
+              <div style={s.agTitle}>{t}</div>
+              <div style={s.agDesc}>{d}</div>
+            </div>
+          </div>
+        ))}
+      </div>
+
+      <div style={s.commitBlock}>
+        <p style={s.commitIntro}>Nobody else will see your checklist. Nobody will know if you skip a day. This one's entirely yours.</p>
+        <div style={s.commitLine}>
+          I,&nbsp;
+          <input
+            style={s.commitInput}
+            value={name}
+            onChange={(e) => setName(e.target.value)}
+            placeholder="your name"
+          />
+          , am doing this for me.
+        </div>
+      </div>
+
+      <div style={s.navRow}>
+        <button style={s.ghost} onClick={onBack}>Back</button>
+        <button
+          style={{ ...s.next, opacity: name ? 1 : 0.45, pointerEvents: name ? "auto" : "none" }}
+          onClick={onNext}
+        >
+          Let's go
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function Done({ onRestart }) {
+  return (
+    <div style={{ ...s.screen, justifyContent: "center", textAlign: "center" }}>
+      <div style={s.logoBig}><span style={s.logoBigText}>SHI</span></div>
+      <h1 style={s.h1}>That's the setup done.</h1>
+      <p style={s.lede}>From here you'd land in the test, then your daily checklist — the loop you've already seen. Setup should feel like a weight off, not a form survived.</p>
+      <button style={s.cta} onClick={onRestart}>Replay the intro</button>
+    </div>
+  );
+}
+
+function ProgressDots({ active }) {
+  return (
+    <div style={s.dots}>
+      {[0,1,2,3].map(i => (
+        <div key={i} style={{ ...s.dot, background: i <= active ? C.ink : C.line, width: i === active ? 22 : 7 }} />
+      ))}
+    </div>
+  );
+}
+
+function Caption({ step }) {
+  return (
+    <div style={s.caption}>
+      First-run flow · {STEPS.indexOf(step) + 1} of {STEPS.length} · built on “relief and agency.” Tap through: welcome → about you → the scale → commitment.
+    </div>
+  );
+}
+
+/* simple synthesized "fart" via WebAudio so the tone-setter actually fires */
+function playFart() {
+  try {
+    const ctx = new (window.AudioContext || window.webkitAudioContext)();
+    const o = ctx.createOscillator();
+    const g = ctx.createGain();
+    o.type = "sawtooth";
+    o.frequency.setValueAtTime(110, ctx.currentTime);
+    o.frequency.exponentialRampToValueAtTime(55, ctx.currentTime + 0.18);
+    o.frequency.linearRampToValueAtTime(70, ctx.currentTime + 0.32);
+    // wobble
+    const lfo = ctx.createOscillator();
+    const lfoGain = ctx.createGain();
+    lfo.frequency.value = 18; lfoGain.gain.value = 22;
+    lfo.connect(lfoGain); lfoGain.connect(o.frequency);
+    g.gain.setValueAtTime(0.0001, ctx.currentTime);
+    g.gain.exponentialRampToValueAtTime(0.35, ctx.currentTime + 0.03);
+    g.gain.exponentialRampToValueAtTime(0.0001, ctx.currentTime + 0.4);
+    o.connect(g); g.connect(ctx.destination);
+    o.start(); lfo.start();
+    o.stop(ctx.currentTime + 0.42); lfo.stop(ctx.currentTime + 0.42);
+  } catch (e) { /* audio not available; fine */ }
+}
+
+const s = {
+  frame: { minHeight: "100vh", background: "#D9D2C2", display: "flex", flexDirection: "column",
+    alignItems: "center", padding: "28px 16px", fontFamily: "'Montserrat', system-ui, sans-serif" },
+  phone: { width: 390, maxWidth: "100%", height: 800, background: C.cream, borderRadius: 38,
+    boxShadow: "0 30px 70px rgba(0,0,0,0.28)", overflow: "hidden", position: "relative",
+    border: "1px solid rgba(0,0,0,0.05)", display: "flex", flexDirection: "column" },
+  screen: { flex: 1, overflowY: "auto", padding: "30px 24px 28px", display: "flex", flexDirection: "column" },
+
+  logoBig: { width: 72, height: 72, borderRadius: "50%", background: C.yellow, alignSelf: "center",
+    display: "flex", alignItems: "center", justifyContent: "center", boxShadow: "inset 0 0 0 4px " + C.ink, marginBottom: 24 },
+  logoBigText: { fontWeight: 800, fontSize: 22, color: C.ink, letterSpacing: "0.5px" },
+
+  welcomeH: { fontWeight: 900, fontSize: 30, color: C.ink, lineHeight: 1.12, margin: "0 0 12px", letterSpacing: "-0.5px" },
+  welcomeSub: { fontSize: 16, color: C.inkSoft, fontWeight: 500, lineHeight: 1.45, margin: "0 0 36px" },
+  welcomeFoot: { fontSize: 12.5, color: C.muted, fontWeight: 500, lineHeight: 1.5, marginTop: 18, padding: "0 10px" },
+
+  h1: { fontWeight: 900, fontSize: 25, color: C.ink, lineHeight: 1.18, margin: "0 0 10px", letterSpacing: "-0.4px" },
+  lede: { fontSize: 14.5, color: C.inkSoft, fontWeight: 500, lineHeight: 1.5, margin: "0 0 20px" },
+
+  label: { fontSize: 12, fontWeight: 800, color: C.ink, textTransform: "uppercase", letterSpacing: "0.6px", marginBottom: 7, display: "block" },
+  labelSm: { fontSize: 11.5, fontWeight: 700, color: C.inkSoft, marginBottom: 5, display: "block" },
+  optional: { fontWeight: 500, textTransform: "none", letterSpacing: 0, color: C.muted, fontSize: 11 },
+  input: { width: "100%", height: 50, borderRadius: 12, border: `1.5px solid ${C.line}`, background: C.card,
+    padding: "0 14px", fontSize: 15, fontFamily: "inherit", color: C.ink, marginBottom: 18, outline: "none" },
+  select: { width: "100%", height: 46, borderRadius: 10, border: `1.5px solid ${C.line}`, background: C.card,
+    padding: "0 12px", fontSize: 14, fontFamily: "inherit", color: C.ink, outline: "none" },
+
+  disclosure: { background: "none", border: "none", color: C.yellowEdge, fontWeight: 700, fontSize: 13,
+    cursor: "pointer", fontFamily: "inherit", padding: "4px 0", textAlign: "left", marginBottom: 8 },
+  moreWrap: { borderTop: `1px solid ${C.line}`, paddingTop: 16, marginTop: 6 },
+  researchNote: { fontSize: 12.5, color: C.muted, fontWeight: 500, lineHeight: 1.5, marginBottom: 16, fontStyle: "italic" },
+
+  realBadge: { alignSelf: "flex-start", background: C.yellow, border: `2px solid ${C.ink}`, color: C.ink,
+    fontWeight: 800, fontSize: 11, letterSpacing: "1px", padding: "5px 10px", borderRadius: 6, marginBottom: 16 },
+
+  scaleCard: { background: C.card, border: `1.5px solid ${C.line}`, borderRadius: 16, padding: "18px 14px", marginBottom: 18 },
+  scaleRow: { display: "flex", alignItems: "center", justifyContent: "space-between", gap: 8 },
+  scaleEnd: { fontSize: 17, fontWeight: 800, color: C.ink, textAlign: "center", lineHeight: 1.2, flexShrink: 0, width: 52 },
+  scaleEndLabel: { fontSize: 9, fontWeight: 600, color: C.muted, textTransform: "uppercase", letterSpacing: "0.3px" },
+  scaleDots: { display: "flex", gap: 5, flex: 1, justifyContent: "center" },
+  scaleDot: { width: 26, height: 26, borderRadius: "50%", border: "1.5px solid", display: "flex",
+    alignItems: "center", justifyContent: "center", fontSize: 12, fontWeight: 700, color: C.ink },
+
+  tipBox: { background: "rgba(242,225,20,0.18)", borderLeft: `3px solid ${C.yellow}`, borderRadius: 8,
+    padding: "12px 14px", fontSize: 13, color: C.inkSoft, lineHeight: 1.5, marginBottom: 18, fontWeight: 500 },
+
+  agList: { display: "flex", flexDirection: "column", gap: 14, marginBottom: 22 },
+  agItem: { display: "flex", gap: 13, alignItems: "flex-start" },
+  agNum: { width: 28, height: 28, borderRadius: "50%", background: C.yellow, border: `2px solid ${C.ink}`,
+    color: C.ink, fontWeight: 800, fontSize: 13, display: "flex", alignItems: "center", justifyContent: "center", flexShrink: 0 },
+  agTitle: { fontWeight: 800, fontSize: 15, color: C.ink, lineHeight: 1.25 },
+  agDesc: { fontSize: 13, color: C.inkSoft, fontWeight: 500, lineHeight: 1.45, marginTop: 3 },
+
+  commitBlock: { background: C.yellow, border: `2.5px solid ${C.ink}`, borderRadius: 16, padding: "18px 16px", marginBottom: 8 },
+  commitIntro: { fontSize: 13, color: C.ink, fontWeight: 600, lineHeight: 1.5, margin: "0 0 14px" },
+  commitLine: { fontSize: 16, fontWeight: 800, color: C.ink, lineHeight: 1.8, display: "flex", flexWrap: "wrap", alignItems: "center" },
+  commitInput: { border: "none", borderBottom: `2px solid ${C.ink}`, background: "transparent",
+    fontSize: 16, fontWeight: 800, fontFamily: "inherit", color: C.ink, padding: "0 6px 2px", minWidth: 110,
+    maxWidth: 160, outline: "none", textAlign: "center" },
+
+  cta: { width: "100%", height: 56, borderRadius: 16, border: "none", background: C.ink, color: C.yellow,
+    fontWeight: 800, fontSize: 16, cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.2px",
+    boxShadow: "0 8px 20px rgba(31,31,31,0.25)", transition: "all 160ms ease" },
+  ctaFarted: { background: C.yellow, color: C.ink, boxShadow: "none" },
+
+  navRow: { display: "flex", gap: 10, marginTop: "auto", paddingTop: 20 },
+  ghost: { flex: "0 0 auto", padding: "0 20px", height: 50, borderRadius: 14, border: `1.5px solid ${C.line}`,
+    background: "transparent", color: C.inkSoft, fontWeight: 700, fontSize: 14, cursor: "pointer", fontFamily: "inherit" },
+  next: { flex: 1, height: 50, borderRadius: 14, border: "none", background: C.ink, color: C.yellow,
+    fontWeight: 800, fontSize: 15, cursor: "pointer", fontFamily: "inherit", transition: "opacity 140ms ease" },
+
+  dots: { display: "flex", gap: 6, marginBottom: 22 },
+  dot: { height: 7, borderRadius: 4, transition: "all 220ms ease" },
+
+  caption: { color: "#6E6857", fontSize: 12, marginTop: 18, maxWidth: 390, textAlign: "center", lineHeight: 1.5 },
+};
+
+const css = `
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap');
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+::-webkit-scrollbar { width: 0; height: 0; }
+button:active { transform: scale(0.98); }
+input::placeholder { color: #B8B2A0; font-weight: 500; }
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; } }
+`;
+
+ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(App));
+
+</script></body></html>

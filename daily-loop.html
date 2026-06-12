@@ -1,0 +1,702 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no"/>
+<title>The SHI(T) App — Core Loop Prototype</title>
+<style>html,body{margin:0;padding:0;background:#D9D2C2;}</style>
+<script crossorigin src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+<script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+<script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+<div id="root"></div>
+<script type="text/babel" data-presets="react">
+const { useState, useMemo, useEffect } = React;
+
+/* ------------------------------------------------------------------
+   THE SHI(T) APP — Core Loop prototype
+   Daily checklist + streak. Brand matched to the website:
+   cream ground, brand yellow, near-black navy, Montserrat.
+   This is a visual/interaction spec to rebuild in React Native.
+-------------------------------------------------------------------*/
+
+const C = {
+  cream: "#F5F1E3",      // paler, slightly green-tinted paper from the checklist
+  card: "#FBF8EE",       // barely-there card, just off the ground
+  ink: "#1F1F1F",        // soft near-black charcoal
+  inkSoft: "#4A4A44",    // body text weight on the checklist
+  yellow: "#F2E114",     // bright acid lemon (the real brand yellow)
+  yellowEdge: "#D9C800", // outline / shadow tone for the yellow
+  muted: "#9A9485",      // captions
+  line: "#D8D2BE",       // hairline rules and empty checkbox borders
+  good: "#3E8E5A",
+};
+
+// Core daily items, lifted verbatim from the checklist PDF (S2 item refs kept for the dev).
+const CORE_DAILY = [
+  { id: 1, label: "Woke up at a consistent time", ref: "Item 1", exc: false },
+  { id: 2, label: "Set my top 3 priorities", ref: "Item 2", exc: false },
+  { id: 3, label: "Had 2.5L of water", ref: "Item 3", exc: false },
+  { id: 4, label: "Avoided alcohol & drugs", ref: "Item 4", exc: true },
+  { id: 5, label: "Avoided fries", ref: "Item 5", exc: false },
+  { id: 6, label: "Wrote down what I'm grateful for", ref: "Item 6", exc: false },
+  { id: 7, label: "Meditated or did breathwork", ref: "Item 7", exc: true },
+  { id: 8, label: "Moved for 30 minutes", ref: "Item 8", exc: true },
+  { id: 9, label: "Laughed or smiled intentionally", ref: "Item 9", exc: false },
+  { id: 10, label: "Spent 15 min on my purpose", ref: "Item 10", exc: false },
+  { id: 11, label: "Checked in with someone", ref: "Item 11", exc: false },
+  { id: 12, label: "Replied to everyone who deserved it", ref: "Item 12", exc: true },
+  { id: 13, label: "Read or learned something", ref: "Item 13", exc: false },
+  { id: 14, label: "Protected my sleep last night", ref: "Item 14", exc: true },
+];
+
+// Personalised domain add-ons (the two daily picks). Shown as part of the day.
+const ADDONS = [
+  { id: 101, label: "Told someone something I appreciate about them", domain: "Relationships" },
+  { id: 102, label: "Did a 5-min box breath", domain: "Mindfulness" },
+];
+
+const ALL = [...CORE_DAILY, ...ADDONS];
+
+const STREAK_START = 22; // pretend the user is mid-programme, in the hard middle
+
+const CONFIRMATIONS = [
+  "Done. See you tomorrow.",
+  "That's one more day in the bank.",
+  "Good work. Rest up.",
+];
+
+function App() {
+  const [checked, setChecked] = useState(() => new Set());
+  const [mood, setMood] = useState(null);
+  const [committed, setCommitted] = useState(false); // day logged
+  const [confirm, setConfirm] = useState("");
+  const [openWhy, setOpenWhy] = useState(null);
+  const [celebrate, setCelebrate] = useState(false); // overlay visible
+
+  const total = ALL.length;
+  const done = checked.size;
+  const pct = Math.round((done / total) * 100);
+  const complete = done === total;
+
+  function toggle(id) {
+    if (committed) return;
+    setChecked((prev) => {
+      const next = new Set(prev);
+      next.has(id) ? next.delete(id) : next.add(id);
+      return next;
+    });
+  }
+
+  function logDay() {
+    setConfirm(CONFIRMATIONS[Math.floor(Math.random() * CONFIRMATIONS.length)]);
+    setCommitted(true);
+    setCelebrate(true);
+  }
+
+  function reset() {
+    setChecked(new Set());
+    setMood(null);
+    setCommitted(false);
+    setCelebrate(false);
+  }
+
+  const streak = committed ? STREAK_START + 1 : STREAK_START;
+
+  return (
+    <div style={styles.frame}>
+      <style>{css}</style>
+
+      {/* phone shell */}
+      <div style={styles.phone}>
+        <Header streak={streak} />
+
+        <div style={styles.scroll}>
+          {/* The signature element: the daily meter */}
+          <DailyMeter pct={pct} done={done} total={total} complete={complete} committed={committed} />
+
+          {!committed && (
+            <MoodRow mood={mood} setMood={setMood} />
+          )}
+
+          {/* Daily list */}
+          <SectionLabel>Today</SectionLabel>
+          <div style={styles.list}>
+            {CORE_DAILY.map((it) => (
+              <Row
+                key={it.id}
+                item={it}
+                checked={checked.has(it.id)}
+                onToggle={() => toggle(it.id)}
+                onWhy={() => setOpenWhy(it)}
+                locked={committed}
+              />
+            ))}
+          </div>
+
+          <SectionLabel>Your picks</SectionLabel>
+          <div style={styles.list}>
+            {ADDONS.map((it) => (
+              <Row
+                key={it.id}
+                item={it}
+                checked={checked.has(it.id)}
+                onToggle={() => toggle(it.id)}
+                onWhy={() => setOpenWhy(it)}
+                locked={committed}
+                tag={it.domain}
+              />
+            ))}
+          </div>
+
+          <div style={{ height: 120 }} />
+        </div>
+
+        {/* Bottom action / confirmation */}
+        <div style={styles.dock}>
+          {!committed ? (
+            <button
+              style={{
+                ...styles.cta,
+                opacity: done > 0 ? 1 : 0.45,
+                pointerEvents: done > 0 ? "auto" : "none",
+              }}
+              onClick={logDay}
+            >
+              {complete ? "Log today — full flush" : `Log today (${done}/${total})`}
+            </button>
+          ) : (
+            <div style={styles.confirmWrap}>
+              <div style={styles.confirmText}>{confirm}</div>
+              <div style={styles.confirmSub}>
+                Day {streak} of 63 logged · streak intact
+              </div>
+              <button style={styles.replay} onClick={() => setCelebrate(true)}>
+                Replay celebration
+              </button>
+            </div>
+          )}
+        </div>
+      </div>
+
+      {/* "Why this is on the list" sheet */}
+      {openWhy && <WhySheet item={openWhy} onClose={() => setOpenWhy(null)} />}
+
+      {/* Celebration */}
+      {celebrate && (
+        <Celebration
+          complete={complete}
+          done={done}
+          total={total}
+          streak={streak}
+          onClose={() => setCelebrate(false)}
+          onReset={reset}
+        />
+      )}
+
+      <Caption />
+    </div>
+  );
+}
+
+function Header({ streak }) {
+  return (
+    <div style={styles.header}>
+      <div style={styles.logoMark}>
+        <span style={styles.logoText}>SHI</span>
+      </div>
+      <div style={{ flex: 1 }}>
+        <div style={styles.greeting}>Morning.</div>
+        <div style={styles.subGreeting}>Let's improve your shit.</div>
+      </div>
+      <div style={styles.streakPill}>
+        <span style={styles.streakNum}>{streak}</span>
+        <span style={styles.streakLabel}>day streak</span>
+      </div>
+    </div>
+  );
+}
+
+/* The signature: a horizontal meter that fills as the day completes.
+   At 100% it "clears" — the brand's flush idea, kept tasteful:
+   the bar goes solid yellow and the label changes. When the day is
+   logged, completion feeds the streak (shown in the dock + header). */
+function DailyMeter({ pct, done, total, complete, committed }) {
+  return (
+    <div style={styles.meterCard}>
+      <div style={styles.meterTop}>
+        <span style={styles.meterTitle}>{committed ? "Today, done" : "Today"}</span>
+        <span style={styles.meterCount}>
+          {done}<span style={styles.meterTotal}>/{total}</span>
+        </span>
+      </div>
+      <div style={styles.track}>
+        <div
+          style={{
+            ...styles.fill,
+            width: `${pct}%`,
+            opacity: complete ? 1 : 0.85,
+          }}
+        />
+        {/* subtle segment ticks so progress reads as discrete items, not a vague bar */}
+        <div style={styles.ticks}>
+          {Array.from({ length: total - 1 }).map((_, i) => (
+            <div key={i} style={styles.tick} />
+          ))}
+        </div>
+      </div>
+      <div style={styles.meterFoot}>
+        {complete
+          ? committed
+            ? "Cleared. The chain grows by one."
+            : "Everything's ticked. Log it to bank the day."
+          : `${total - done} to go. No need for perfect — just honest.`}
+      </div>
+    </div>
+  );
+}
+
+function MoodRow({ mood, setMood }) {
+  const faces = ["rough", "meh", "ok", "good", "great"];
+  const glyph = ["▁", "▃", "▅", "▆", "▇"];
+  return (
+    <div style={styles.moodCard}>
+      <div style={styles.moodQ}>How's today going?</div>
+      <div style={styles.moodRow}>
+        {faces.map((f, i) => (
+          <button
+            key={f}
+            onClick={() => setMood(i)}
+            style={{
+              ...styles.moodBtn,
+              background: mood === i ? C.ink : "transparent",
+              color: mood === i ? C.yellow : C.muted,
+              borderColor: mood === i ? C.ink : C.line,
+            }}
+            aria-label={f}
+          >
+            <span style={{ fontSize: 18, lineHeight: 1 }}>{glyph[i]}</span>
+          </button>
+        ))}
+      </div>
+    </div>
+  );
+}
+
+function SectionLabel({ children }) {
+  return <div style={styles.sectionLabel}>{children}</div>;
+}
+
+function Row({ item, checked, onToggle, onWhy, locked, tag }) {
+  return (
+    <div
+      style={{
+        ...styles.row,
+        opacity: locked && !checked ? 0.5 : 1,
+      }}
+    >
+      <button
+        onClick={onToggle}
+        style={{
+          ...styles.check,
+          background: checked ? C.yellow : "transparent",
+          borderColor: checked ? C.yellowEdge : C.line,
+        }}
+        aria-label={checked ? "Completed" : "Mark complete"}
+      >
+        {checked && <Tick />}
+      </button>
+      <div style={{ flex: 1, minWidth: 0 }}>
+        <div
+          style={{
+            ...styles.rowLabel,
+            textDecoration: checked ? "line-through" : "none",
+            color: checked ? C.muted : C.ink,
+          }}
+        >
+          {item.label}
+        </div>
+        <button style={styles.why} onClick={onWhy}>
+          Why this is on the list
+        </button>
+      </div>
+      {tag && <div style={styles.tag}>{tag}</div>}
+      {item.exc && !tag && <div style={styles.excDot} title="Has an exception rule" />}
+    </div>
+  );
+}
+
+function Tick() {
+  return (
+    <svg width="14" height="14" viewBox="0 0 24 24" fill="none">
+      <path d="M5 13l4 4L19 7" stroke={C.ink} strokeWidth="3.5" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function WhySheet({ item, onClose }) {
+  return (
+    <div style={styles.sheetScrim} onClick={onClose}>
+      <div style={styles.sheet} onClick={(e) => e.stopPropagation()}>
+        <div style={styles.sheetHandle} />
+        <div style={styles.sheetTitle}>{item.label}</div>
+        <div style={styles.sheetRef}>
+          {item.domain ? `${item.domain} add-on` : `Core daily · ${item.ref}`}
+          {item.exc ? " · partial exception" : ""}
+        </div>
+        <p style={styles.sheetBody}>
+          This is where the relevant section of the free ebook loads inline — the
+          science, the reasoning, and the exception rule for this item. It opens
+          here, in the app, and you tap back to your list when you're done.
+        </p>
+        <p style={styles.sheetBodyMuted}>
+          (Prototype placeholder. The real content is the ebook passage for {item.ref || "this item"}.)
+        </p>
+        <button style={styles.sheetClose} onClick={onClose}>
+          Back to today
+        </button>
+      </div>
+    </div>
+  );
+}
+
+function Celebration({ complete, done, total, streak, onClose, onReset }) {
+  // streak counts up from previous to current on mount
+  const [shown, setShown] = useState(streak - 1);
+  const [phase, setPhase] = useState("enter"); // enter -> settle
+
+  useEffect(() => {
+    const t1 = setTimeout(() => setShown(streak), 520);
+    const t2 = setTimeout(() => setPhase("settle"), 900);
+    return () => { clearTimeout(t1); clearTimeout(t2); };
+  }, [streak]);
+
+  // headline + line scale to how much got done — never cheerleading
+  const big = complete;
+  const headline = big ? "Cleared." : "Logged.";
+  const line = big
+    ? "Everything ticked. That's a full one — and a rare one."
+    : `${done} of ${total} done. Showing up counts. See you tomorrow.`;
+
+  // mini chain: show the last several days filling, with today as the new link
+  const links = 9;
+  return (
+    <div style={styles.celebScrim}>
+      <div style={styles.celebCard}>
+        {big && <FlushBurst />}
+
+        <div style={styles.celebMarkWrap}>
+          <div style={{ ...styles.celebMark, animation: big ? "pop 520ms cubic-bezier(.2,1.4,.4,1)" : "pop 420ms ease" }}>
+            {big ? <BigTick /> : <SmallCheck />}
+          </div>
+        </div>
+
+        <div style={styles.celebHead}>{headline}</div>
+        <div style={styles.celebLine}>{line}</div>
+
+        {/* streak counter ticking up */}
+        <div style={styles.streakBlock}>
+          <div style={styles.streakBig}>
+            <span style={styles.streakBigNum} key={shown}>{shown}</span>
+            <span style={styles.streakBigOf}>/ 63</span>
+          </div>
+          <div style={styles.streakBigLabel}>days, unbroken</div>
+
+          {/* the chain visibly extends */}
+          <div style={styles.chain}>
+            {Array.from({ length: links }).map((_, i) => {
+              const isNew = i === links - 1;
+              const filled = i < links - 1 || phase === "settle" || !isNew;
+              return (
+                <div
+                  key={i}
+                  style={{
+                    ...styles.link,
+                    background: isNew && phase !== "enter" ? C.yellow : (isNew ? "rgba(31,31,31,0.18)" : C.yellow),
+                    transform: isNew && phase === "settle" ? "scale(1)" : isNew ? "scale(0.4)" : "scale(1)",
+                    opacity: isNew && phase === "enter" ? 0.3 : 1,
+                  }}
+                />
+              );
+            })}
+          </div>
+          {big && (
+            <div style={styles.midHint}>You're past day 21 — the part most people don't reach.</div>
+          )}
+        </div>
+
+        <button style={styles.celebDone} onClick={onClose}>Done</button>
+        <button style={styles.celebReset} onClick={onReset}>Reset the day (prototype)</button>
+      </div>
+    </div>
+  );
+}
+
+function FlushBurst() {
+  // tasteful, brand-coloured radial motes — not confetti spray
+  const motes = Array.from({ length: 14 });
+  return (
+    <div style={styles.burstWrap} aria-hidden>
+      {motes.map((_, i) => {
+        const angle = (i / motes.length) * Math.PI * 2;
+        const dist = 90 + (i % 3) * 22;
+        return (
+          <span
+            key={i}
+            style={{
+              ...styles.mote,
+              "--dx": `${Math.cos(angle) * dist}px`,
+              "--dy": `${Math.sin(angle) * dist}px`,
+              background: i % 2 ? C.yellow : C.yellowEdge,
+              animationDelay: `${(i % 5) * 30}ms`,
+            }}
+          />
+        );
+      })}
+    </div>
+  );
+}
+
+function BigTick() {
+  return (
+    <svg width="44" height="44" viewBox="0 0 24 24" fill="none">
+      <path d="M5 13l4 4L19 7" stroke={C.ink} strokeWidth="3.2" strokeLinecap="round" strokeLinejoin="round"
+        style={{ strokeDasharray: 24, strokeDashoffset: 24, animation: "draw 460ms 160ms ease forwards" }} />
+    </svg>
+  );
+}
+function SmallCheck() {
+  return (
+    <svg width="40" height="40" viewBox="0 0 24 24" fill="none">
+      <path d="M5 13l4 4L19 7" stroke={C.ink} strokeWidth="3" strokeLinecap="round" strokeLinejoin="round" />
+    </svg>
+  );
+}
+
+function Caption() {
+  return (
+    <div style={styles.caption}>
+      Prototype · daily core loop · brand matched to the website. Tap items, watch the
+      meter fill, log the day. Rebuild target: React Native.
+    </div>
+  );
+}
+
+const styles = {
+  frame: {
+    minHeight: "100vh",
+    background: "#D9D2C2",
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    padding: "28px 16px",
+    fontFamily: "'Montserrat', system-ui, sans-serif",
+  },
+  phone: {
+    width: 390,
+    maxWidth: "100%",
+    height: 800,
+    background: C.cream,
+    borderRadius: 38,
+    boxShadow: "0 30px 70px rgba(0,0,0,0.28)",
+    display: "flex",
+    flexDirection: "column",
+    overflow: "hidden",
+    position: "relative",
+    border: "1px solid rgba(0,0,0,0.05)",
+  },
+  header: {
+    display: "flex",
+    alignItems: "center",
+    gap: 12,
+    padding: "22px 20px 14px",
+  },
+  logoMark: {
+    width: 44, height: 44, borderRadius: "50%",
+    background: C.yellow,
+    display: "flex", alignItems: "center", justifyContent: "center",
+    boxShadow: "inset 0 0 0 2.5px " + C.ink,
+    flexShrink: 0,
+  },
+  logoText: { fontWeight: 800, fontSize: 13, color: C.ink, letterSpacing: "0.5px" },
+  greeting: { fontWeight: 800, fontSize: 20, color: C.ink, lineHeight: 1.1 },
+  subGreeting: { fontSize: 12.5, color: C.muted, fontWeight: 500, marginTop: 2 },
+  streakPill: {
+    display: "flex", flexDirection: "column", alignItems: "center",
+    background: C.yellow, border: `2px solid ${C.ink}`, borderRadius: 12, padding: "6px 12px", flexShrink: 0,
+  },
+  streakNum: { color: C.ink, fontWeight: 800, fontSize: 18, lineHeight: 1 },
+  streakLabel: { color: C.ink, fontSize: 8.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "0.5px", marginTop: 2, opacity: 0.7 },
+
+  scroll: { flex: 1, overflowY: "auto", padding: "4px 16px 0" },
+
+  meterCard: {
+    background: C.yellow, border: `2.5px solid ${C.ink}`, borderRadius: 16, padding: "16px 18px 14px", marginBottom: 16,
+  },
+  meterTop: { display: "flex", justifyContent: "space-between", alignItems: "baseline", marginBottom: 11 },
+  meterTitle: { color: C.ink, fontWeight: 800, fontSize: 14, textTransform: "uppercase", letterSpacing: "0.8px" },
+  meterCount: { color: C.ink, fontWeight: 800, fontSize: 22 },
+  meterTotal: { color: "rgba(31,31,31,0.45)", fontWeight: 700, fontSize: 15 },
+  track: {
+    position: "relative", height: 14, background: "rgba(31,31,31,0.12)",
+    borderRadius: 7, overflow: "hidden", border: `1.5px solid ${C.ink}`,
+  },
+  fill: { position: "absolute", left: 0, top: 0, bottom: 0, background: C.ink, transition: "width 320ms cubic-bezier(.4,1.3,.6,1)" },
+  ticks: { position: "absolute", inset: 0, display: "flex", justifyContent: "space-between", pointerEvents: "none" },
+  tick: { width: 1.5, height: "100%", background: "rgba(31,31,31,0.18)" },
+  meterFoot: { color: "rgba(31,31,31,0.7)", fontSize: 11.5, fontWeight: 600, marginTop: 9, lineHeight: 1.4 },
+
+  moodCard: { background: C.card, borderRadius: 18, padding: "14px 16px", marginBottom: 16, border: `1px solid ${C.line}` },
+  moodQ: { fontWeight: 700, fontSize: 13.5, color: C.ink, marginBottom: 10 },
+  moodRow: { display: "flex", gap: 8, justifyContent: "space-between" },
+  moodBtn: {
+    flex: 1, height: 40, borderRadius: 12, border: `1.5px solid ${C.line}`,
+    display: "flex", alignItems: "center", justifyContent: "center", cursor: "pointer",
+    transition: "all 140ms ease",
+  },
+
+  sectionLabel: {
+    fontSize: 11, fontWeight: 800, color: C.muted, textTransform: "uppercase",
+    letterSpacing: "1.4px", margin: "6px 4px 8px",
+  },
+  list: { display: "flex", flexDirection: "column", gap: 8, marginBottom: 14 },
+  row: {
+    display: "flex", alignItems: "center", gap: 13,
+    background: C.card, borderRadius: 12, padding: "12px 14px",
+    border: `1px solid ${C.line}`, transition: "opacity 160ms ease",
+  },
+  check: {
+    width: 24, height: 24, borderRadius: 6, border: "2px solid",
+    display: "flex", alignItems: "center", justifyContent: "center",
+    cursor: "pointer", flexShrink: 0, transition: "all 140ms ease",
+  },
+  rowLabel: { fontSize: 14, fontWeight: 600, lineHeight: 1.25, color: C.inkSoft, transition: "color 140ms ease" },
+  why: {
+    background: "none", border: "none", padding: "3px 0 0",
+    fontSize: 11, color: C.yellowEdge, fontWeight: 700, cursor: "pointer",
+    fontFamily: "inherit",
+  },
+  tag: {
+    fontSize: 9.5, fontWeight: 800, color: C.ink, background: C.yellow,
+    padding: "3px 7px", borderRadius: 5, textTransform: "uppercase", letterSpacing: "0.4px", flexShrink: 0,
+    border: `1px solid ${C.ink}`,
+  },
+  excDot: { width: 7, height: 7, borderRadius: "50%", background: C.line, flexShrink: 0 },
+
+  dock: {
+    padding: "12px 16px 18px",
+    background: `linear-gradient(180deg, rgba(242,238,227,0) 0%, ${C.cream} 22%)`,
+    position: "absolute", bottom: 0, left: 0, right: 0,
+  },
+  cta: {
+    width: "100%", height: 54, borderRadius: 16, border: "none",
+    background: C.ink, color: C.yellow, fontWeight: 800, fontSize: 16,
+    cursor: "pointer", fontFamily: "inherit", letterSpacing: "0.2px",
+    boxShadow: "0 8px 20px rgba(32,32,42,0.28)", transition: "transform 120ms ease",
+  },
+  confirmWrap: {
+    background: C.yellow, border: `2.5px solid ${C.ink}`, borderRadius: 14, padding: "14px 18px", textAlign: "center",
+  },
+  confirmText: { color: C.ink, fontWeight: 800, fontSize: 17 },
+  confirmSub: { color: "rgba(31,31,31,0.7)", fontWeight: 700, fontSize: 12, marginTop: 4 },
+  replay: {
+    marginTop: 10, background: "transparent", border: `1.5px solid ${C.ink}`,
+    color: C.ink, fontWeight: 700, fontSize: 11.5, padding: "6px 14px",
+    borderRadius: 9, cursor: "pointer", fontFamily: "inherit",
+  },
+
+  celebScrim: {
+    position: "fixed", inset: 0, background: "rgba(18,16,10,0.55)",
+    display: "flex", alignItems: "center", justifyContent: "center", zIndex: 60,
+    animation: "fade 200ms ease", padding: 18,
+  },
+  celebCard: {
+    width: 340, maxWidth: "100%", background: C.cream, borderRadius: 28,
+    padding: "30px 26px 22px", textAlign: "center", position: "relative",
+    boxShadow: "0 30px 80px rgba(0,0,0,0.4)",
+    animation: "riseIn 360ms cubic-bezier(.2,1,.3,1)", overflow: "hidden",
+  },
+  celebMarkWrap: { display: "flex", justifyContent: "center", marginBottom: 16, position: "relative", zIndex: 2 },
+  celebMark: {
+    width: 78, height: 78, borderRadius: "50%", background: C.yellow,
+    display: "flex", alignItems: "center", justifyContent: "center",
+    border: `3px solid ${C.ink}`,
+  },
+  celebHead: { fontWeight: 900, fontSize: 30, color: C.ink, letterSpacing: "-0.5px", position: "relative", zIndex: 2 },
+  celebLine: { fontSize: 13.5, color: C.inkSoft, lineHeight: 1.5, marginTop: 8, fontWeight: 500, padding: "0 6px", position: "relative", zIndex: 2 },
+
+  streakBlock: {
+    marginTop: 20, background: C.yellow, border: `2.5px solid ${C.ink}`, borderRadius: 14, padding: "18px 16px 16px", position: "relative", zIndex: 2,
+  },
+  streakBig: { display: "flex", alignItems: "baseline", justifyContent: "center", gap: 6 },
+  streakBigNum: { color: C.ink, fontWeight: 900, fontSize: 46, lineHeight: 1, display: "inline-block", animation: "countPop 400ms cubic-bezier(.2,1.5,.4,1)" },
+  streakBigOf: { color: "rgba(31,31,31,0.45)", fontWeight: 800, fontSize: 18 },
+  streakBigLabel: { color: "rgba(31,31,31,0.7)", fontSize: 10.5, fontWeight: 700, textTransform: "uppercase", letterSpacing: "1.2px", marginTop: 4 },
+  chain: { display: "flex", justifyContent: "center", gap: 5, marginTop: 14 },
+  link: { width: 16, height: 9, borderRadius: 2, border: `1.5px solid ${C.ink}`, transition: "all 320ms cubic-bezier(.2,1.4,.4,1)" },
+  midHint: { color: C.ink, fontSize: 11, fontWeight: 700, marginTop: 12, lineHeight: 1.4 },
+
+  celebDone: {
+    marginTop: 18, width: "100%", height: 50, borderRadius: 12, border: "none",
+    background: C.ink, color: C.yellow, fontWeight: 800, fontSize: 15, cursor: "pointer",
+    fontFamily: "inherit", position: "relative", zIndex: 2,
+  },
+  celebReset: {
+    marginTop: 10, background: "none", border: "none", color: C.muted,
+    fontSize: 11, fontWeight: 600, cursor: "pointer", fontFamily: "inherit", position: "relative", zIndex: 2,
+  },
+  burstWrap: { position: "absolute", top: 56, left: "50%", width: 0, height: 0, zIndex: 1 },
+  mote: {
+    position: "absolute", width: 9, height: 9, borderRadius: "50%",
+    animation: "mote 720ms ease-out forwards",
+  },
+
+  sheetScrim: {
+    position: "fixed", inset: 0, background: "rgba(20,18,12,0.45)",
+    display: "flex", alignItems: "flex-end", justifyContent: "center", zIndex: 50,
+  },
+  sheet: {
+    width: 390, maxWidth: "100%", background: C.cream,
+    borderTopLeftRadius: 26, borderTopRightRadius: 26, padding: "12px 22px 26px",
+    animation: "rise 240ms cubic-bezier(.2,.9,.3,1)",
+  },
+  sheetHandle: { width: 40, height: 4, borderRadius: 2, background: C.line, margin: "0 auto 16px" },
+  sheetTitle: { fontWeight: 800, fontSize: 19, color: C.ink, lineHeight: 1.2 },
+  sheetRef: { fontSize: 11.5, fontWeight: 700, color: C.yellowEdge, marginTop: 6, textTransform: "uppercase", letterSpacing: "0.5px" },
+  sheetBody: { fontSize: 14, color: "#3A372F", lineHeight: 1.55, marginTop: 14 },
+  sheetBodyMuted: { fontSize: 12, color: C.muted, lineHeight: 1.5, marginTop: 8, fontStyle: "italic" },
+  sheetClose: {
+    marginTop: 18, width: "100%", height: 48, borderRadius: 14, border: "none",
+    background: C.ink, color: C.yellow, fontWeight: 800, fontSize: 15, cursor: "pointer", fontFamily: "inherit",
+  },
+
+  caption: {
+    color: "#6E6857", fontSize: 12, marginTop: 18, maxWidth: 390, textAlign: "center", lineHeight: 1.5,
+  },
+};
+
+const css = `
+@import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@500;600;700;800;900&display=swap');
+* { box-sizing: border-box; -webkit-tap-highlight-color: transparent; }
+::-webkit-scrollbar { width: 0; height: 0; }
+button:active { transform: scale(0.97); }
+@keyframes rise { from { transform: translateY(100%); } to { transform: translateY(0); } }
+@keyframes fade { from { opacity: 0; } to { opacity: 1; } }
+@keyframes riseIn { from { transform: translateY(24px) scale(0.96); opacity: 0; } to { transform: translateY(0) scale(1); opacity: 1; } }
+@keyframes pop { 0% { transform: scale(0.3); opacity: 0; } 60% { transform: scale(1.12); } 100% { transform: scale(1); opacity: 1; } }
+@keyframes countPop { 0% { transform: scale(0.5); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+@keyframes draw { to { stroke-dashoffset: 0; } }
+@keyframes mote {
+  0% { transform: translate(0,0) scale(1); opacity: 1; }
+  100% { transform: translate(var(--dx), var(--dy)) scale(0.2); opacity: 0; }
+}
+@media (prefers-reduced-motion: reduce) { * { transition: none !important; animation: none !important; } }
+`;
+
+const root = ReactDOM.createRoot(document.getElementById('root'));
+root.render(React.createElement(App));
+
+</script>
+</body>
+</html>

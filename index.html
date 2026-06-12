@@ -76,6 +76,20 @@
 
   .foot{text-align:center;font-size:12px;color:var(--muted);font-weight:600;margin-top:30px;line-height:1.6}
   .foot b{color:var(--inkSoft)}
+
+  .demos{margin-top:34px;padding-top:8px}
+  .demos-head{margin-bottom:14px}
+  .demos-title{font-weight:900;font-size:18px;display:block}
+  .demos-sub{font-size:12px;color:var(--muted);font-weight:600}
+  .demo-card{display:flex;align-items:center;gap:14px;text-decoration:none;color:inherit;
+    background:var(--yellow);border:2.5px solid var(--ink);border-radius:14px;
+    padding:15px 18px;margin-bottom:11px;transition:transform .12s}
+  .demo-card:active{transform:scale(.99)}
+  .demo-info{flex:1;min-width:0}
+  .demo-name{font-weight:800;font-size:15px}
+  .demo-desc{font-size:12.5px;font-weight:600;color:var(--inkSoft);margin-top:2px}
+  .demo-go{font-weight:800;font-size:13px;background:var(--ink);color:var(--yellow);
+    padding:8px 14px;border-radius:10px;flex-shrink:0}
 </style>
 </head>
 <body>
@@ -105,6 +119,27 @@
   </div>
 
   <div id="phases"></div>
+
+  <div class="demos">
+    <div class="demos-head">
+      <span class="demos-title">Live Demos</span>
+      <span class="demos-sub">Tap to try on your phone — these are working previews, not the final app</span>
+    </div>
+    <a class="demo-card" href="demos/onboarding.html">
+      <div class="demo-info">
+        <div class="demo-name">Welcome &amp; Onboarding</div>
+        <div class="demo-desc">The first-run flow — fart intro, sign-up, the 1–7 scale, commitment.</div>
+      </div>
+      <div class="demo-go">Try it ▸</div>
+    </a>
+    <a class="demo-card" href="demos/daily-loop.html">
+      <div class="demo-info">
+        <div class="demo-name">The Daily Loop</div>
+        <div class="demo-desc">The core daily checklist, progress meter, streak and celebration.</div>
+      </div>
+      <div class="demo-go">Try it ▸</div>
+    </a>
+  </div>
 
   <div class="foot">
     Updated as the build progresses · <b>The SHI(T) App</b><br/>
