@@ -310,8 +310,7 @@ var d=null!=c&&c.hydratedSources||null,e=!1,f="",g=aj;null!==c&&void 0!==c&&(!0=
 function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmountComponentAtNode=function(a){if(!Vd(a))throw Error(m(40));return a._reactRootContainer?(yb(function(){Wd(null,null,a,!1,function(){a._reactRootContainer=null;a[Ja]=null})}),!0):!1};Q.unstable_batchedUpdates=Tf;Q.unstable_renderSubtreeIntoContainer=function(a,b,c,d){if(!Vd(c))throw Error(m(200));if(null==a||void 0===a._reactInternals)throw Error(m(38));return Wd(a,b,c,!1,d)};Q.version="18.3.1-next-f1338f8080-20240426"});
 })();
 </script>
-<script>import { jsxDEV as _jsxDEV } from "react/jsx-dev-runtime";
-const {
+<script>const {
   useState,
   useMemo,
   useEffect,
@@ -464,124 +463,100 @@ function App() {
     setCelebrate(false);
   }
   const streak = committed ? STREAK_START + 1 : STREAK_START;
-  return /*#__PURE__*/_jsxDEV("div", {
-    style: styles.frame,
-    children: [/*#__PURE__*/_jsxDEV("style", {
-      children: css
-    }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-      style: styles.phone,
-      children: [/*#__PURE__*/_jsxDEV(Header, {
-        streak: streak
-      }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-        style: styles.scroll,
-        children: [/*#__PURE__*/_jsxDEV(DailyMeter, {
-          pct: pct,
-          done: done,
-          total: total,
-          complete: complete,
-          committed: committed
-        }, void 0, false), !committed && /*#__PURE__*/_jsxDEV(MoodRow, {
-          mood: mood,
-          setMood: setMood
-        }, void 0, false), /*#__PURE__*/_jsxDEV(SectionLabel, {
-          children: "Today"
-        }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-          style: styles.list,
-          children: CORE_DAILY.map(it => /*#__PURE__*/_jsxDEV(Row, {
-            item: it,
-            checked: checked.has(it.id),
-            onToggle: () => toggle(it.id),
-            onWhy: () => setOpenWhy(it),
-            locked: committed
-          }, it.id, false))
-        }, void 0, false), /*#__PURE__*/_jsxDEV(SectionLabel, {
-          children: "Your picks"
-        }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-          style: styles.list,
-          children: ADDONS.map(it => /*#__PURE__*/_jsxDEV(Row, {
-            item: it,
-            checked: checked.has(it.id),
-            onToggle: () => toggle(it.id),
-            onWhy: () => setOpenWhy(it),
-            locked: committed,
-            tag: it.domain
-          }, it.id, false))
-        }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-          style: {
-            height: 120
-          }
-        }, void 0, false)]
-      }, void 0, true), /*#__PURE__*/_jsxDEV("div", {
-        style: styles.dock,
-        children: !committed ? /*#__PURE__*/_jsxDEV("button", {
-          style: {
-            ...styles.cta,
-            opacity: done > 0 ? 1 : 0.45,
-            pointerEvents: done > 0 ? "auto" : "none"
-          },
-          onClick: logDay,
-          children: complete ? "Log today — full flush" : `Log today (${done}/${total})`
-        }, void 0, false) : /*#__PURE__*/_jsxDEV("div", {
-          style: styles.confirmWrap,
-          children: [/*#__PURE__*/_jsxDEV("div", {
-            style: styles.confirmText,
-            children: confirm
-          }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-            style: styles.confirmSub,
-            children: ["Day ", streak, " of 63 logged · streak intact"]
-          }, void 0, true), /*#__PURE__*/_jsxDEV("button", {
-            style: styles.replay,
-            onClick: () => setCelebrate(true),
-            children: "Replay celebration"
-          }, void 0, false)]
-        }, void 0, true)
-      }, void 0, false)]
-    }, void 0, true), openWhy && /*#__PURE__*/_jsxDEV(WhySheet, {
-      item: openWhy,
-      onClose: () => setOpenWhy(null)
-    }, void 0, false), celebrate && /*#__PURE__*/_jsxDEV(Celebration, {
-      complete: complete,
-      done: done,
-      total: total,
-      streak: streak,
-      onClose: () => setCelebrate(false),
-      onReset: reset
-    }, void 0, false), /*#__PURE__*/_jsxDEV(Caption, {}, void 0, false)]
-  }, void 0, true);
+  return /*#__PURE__*/React.createElement("div", {
+    style: styles.frame
+  }, /*#__PURE__*/React.createElement("style", null, css), /*#__PURE__*/React.createElement("div", {
+    style: styles.phone
+  }, /*#__PURE__*/React.createElement(Header, {
+    streak: streak
+  }), /*#__PURE__*/React.createElement("div", {
+    style: styles.scroll
+  }, /*#__PURE__*/React.createElement(DailyMeter, {
+    pct: pct,
+    done: done,
+    total: total,
+    complete: complete,
+    committed: committed
+  }), !committed && /*#__PURE__*/React.createElement(MoodRow, {
+    mood: mood,
+    setMood: setMood
+  }), /*#__PURE__*/React.createElement(SectionLabel, null, "Today"), /*#__PURE__*/React.createElement("div", {
+    style: styles.list
+  }, CORE_DAILY.map(it => /*#__PURE__*/React.createElement(Row, {
+    key: it.id,
+    item: it,
+    checked: checked.has(it.id),
+    onToggle: () => toggle(it.id),
+    onWhy: () => setOpenWhy(it),
+    locked: committed
+  }))), /*#__PURE__*/React.createElement(SectionLabel, null, "Your picks"), /*#__PURE__*/React.createElement("div", {
+    style: styles.list
+  }, ADDONS.map(it => /*#__PURE__*/React.createElement(Row, {
+    key: it.id,
+    item: it,
+    checked: checked.has(it.id),
+    onToggle: () => toggle(it.id),
+    onWhy: () => setOpenWhy(it),
+    locked: committed,
+    tag: it.domain
+  }))), /*#__PURE__*/React.createElement("div", {
+    style: {
+      height: 120
+    }
+  })), /*#__PURE__*/React.createElement("div", {
+    style: styles.dock
+  }, !committed ? /*#__PURE__*/React.createElement("button", {
+    style: {
+      ...styles.cta,
+      opacity: done > 0 ? 1 : 0.45,
+      pointerEvents: done > 0 ? "auto" : "none"
+    },
+    onClick: logDay
+  }, complete ? "Log today — full flush" : `Log today (${done}/${total})`) : /*#__PURE__*/React.createElement("div", {
+    style: styles.confirmWrap
+  }, /*#__PURE__*/React.createElement("div", {
+    style: styles.confirmText
+  }, confirm), /*#__PURE__*/React.createElement("div", {
+    style: styles.confirmSub
+  }, "Day ", streak, " of 63 logged · streak intact"), /*#__PURE__*/React.createElement("button", {
+    style: styles.replay,
+    onClick: () => setCelebrate(true)
+  }, "Replay celebration")))), openWhy && /*#__PURE__*/React.createElement(WhySheet, {
+    item: openWhy,
+    onClose: () => setOpenWhy(null)
+  }), celebrate && /*#__PURE__*/React.createElement(Celebration, {
+    complete: complete,
+    done: done,
+    total: total,
+    streak: streak,
+    onClose: () => setCelebrate(false),
+    onReset: reset
+  }), /*#__PURE__*/React.createElement(Caption, null));
 }
 function Header({
   streak
 }) {
-  return /*#__PURE__*/_jsxDEV("div", {
-    style: styles.header,
-    children: [/*#__PURE__*/_jsxDEV("div", {
-      style: styles.logoMark,
-      children: /*#__PURE__*/_jsxDEV("span", {
-        style: styles.logoText,
-        children: "SHI"
-      }, void 0, false)
-    }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-      style: {
-        flex: 1
-      },
-      children: [/*#__PURE__*/_jsxDEV("div", {
-        style: styles.greeting,
-        children: "Morning."
-      }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-        style: styles.subGreeting,
-        children: "Let's improve your shit."
-      }, void 0, false)]
-    }, void 0, true), /*#__PURE__*/_jsxDEV("div", {
-      style: styles.streakPill,
-      children: [/*#__PURE__*/_jsxDEV("span", {
-        style: styles.streakNum,
-        children: streak
-      }, void 0, false), /*#__PURE__*/_jsxDEV("span", {
-        style: styles.streakLabel,
-        children: "day streak"
-      }, void 0, false)]
-    }, void 0, true)]
-  }, void 0, true);
+  return /*#__PURE__*/React.createElement("div", {
+    style: styles.header
+  }, /*#__PURE__*/React.createElement("div", {
+    style: styles.logoMark
+  }, /*#__PURE__*/React.createElement("span", {
+    style: styles.logoText
+  }, "SHI")), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: styles.greeting
+  }, "Morning."), /*#__PURE__*/React.createElement("div", {
+    style: styles.subGreeting
+  }, "Let's improve your shit.")), /*#__PURE__*/React.createElement("div", {
+    style: styles.streakPill
+  }, /*#__PURE__*/React.createElement("span", {
+    style: styles.streakNum
+  }, streak), /*#__PURE__*/React.createElement("span", {
+    style: styles.streakLabel
+  }, "day streak")));
 }
 
 /* The signature: a horizontal meter that fills as the day completes.
@@ -595,41 +570,34 @@ function DailyMeter({
   complete,
   committed
 }) {
-  return /*#__PURE__*/_jsxDEV("div", {
-    style: styles.meterCard,
-    children: [/*#__PURE__*/_jsxDEV("div", {
-      style: styles.meterTop,
-      children: [/*#__PURE__*/_jsxDEV("span", {
-        style: styles.meterTitle,
-        children: committed ? "Today, done" : "Today"
-      }, void 0, false), /*#__PURE__*/_jsxDEV("span", {
-        style: styles.meterCount,
-        children: [done, /*#__PURE__*/_jsxDEV("span", {
-          style: styles.meterTotal,
-          children: ["/", total]
-        }, void 0, true)]
-      }, void 0, true)]
-    }, void 0, true), /*#__PURE__*/_jsxDEV("div", {
-      style: styles.track,
-      children: [/*#__PURE__*/_jsxDEV("div", {
-        style: {
-          ...styles.fill,
-          width: `${pct}%`,
-          opacity: complete ? 1 : 0.85
-        }
-      }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-        style: styles.ticks,
-        children: Array.from({
-          length: total - 1
-        }).map((_, i) => /*#__PURE__*/_jsxDEV("div", {
-          style: styles.tick
-        }, i, false))
-      }, void 0, false)]
-    }, void 0, true), /*#__PURE__*/_jsxDEV("div", {
-      style: styles.meterFoot,
-      children: complete ? committed ? "Cleared. The chain grows by one." : "Everything's ticked. Log it to bank the day." : `${total - done} to go. No need for perfect — just honest.`
-    }, void 0, false)]
-  }, void 0, true);
+  return /*#__PURE__*/React.createElement("div", {
+    style: styles.meterCard
+  }, /*#__PURE__*/React.createElement("div", {
+    style: styles.meterTop
+  }, /*#__PURE__*/React.createElement("span", {
+    style: styles.meterTitle
+  }, committed ? "Today, done" : "Today"), /*#__PURE__*/React.createElement("span", {
+    style: styles.meterCount
+  }, done, /*#__PURE__*/React.createElement("span", {
+    style: styles.meterTotal
+  }, "/", total))), /*#__PURE__*/React.createElement("div", {
+    style: styles.track
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      ...styles.fill,
+      width: `${pct}%`,
+      opacity: complete ? 1 : 0.85
+    }
+  }), /*#__PURE__*/React.createElement("div", {
+    style: styles.ticks
+  }, Array.from({
+    length: total - 1
+  }).map((_, i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: styles.tick
+  })))), /*#__PURE__*/React.createElement("div", {
+    style: styles.meterFoot
+  }, complete ? committed ? "Cleared. The chain grows by one." : "Everything's ticked. Log it to bank the day." : `${total - done} to go. No need for perfect — just honest.`));
 }
 function MoodRow({
   mood,
@@ -637,40 +605,35 @@ function MoodRow({
 }) {
   const faces = ["rough", "meh", "ok", "good", "great"];
   const glyph = ["▁", "▃", "▅", "▆", "▇"];
-  return /*#__PURE__*/_jsxDEV("div", {
-    style: styles.moodCard,
-    children: [/*#__PURE__*/_jsxDEV("div", {
-      style: styles.moodQ,
-      children: "How's today going?"
-    }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-      style: styles.moodRow,
-      children: faces.map((f, i) => /*#__PURE__*/_jsxDEV("button", {
-        onClick: () => setMood(i),
-        style: {
-          ...styles.moodBtn,
-          background: mood === i ? C.ink : "transparent",
-          color: mood === i ? C.yellow : C.muted,
-          borderColor: mood === i ? C.ink : C.line
-        },
-        "aria-label": f,
-        children: /*#__PURE__*/_jsxDEV("span", {
-          style: {
-            fontSize: 18,
-            lineHeight: 1
-          },
-          children: glyph[i]
-        }, void 0, false)
-      }, f, false))
-    }, void 0, false)]
-  }, void 0, true);
+  return /*#__PURE__*/React.createElement("div", {
+    style: styles.moodCard
+  }, /*#__PURE__*/React.createElement("div", {
+    style: styles.moodQ
+  }, "How's today going?"), /*#__PURE__*/React.createElement("div", {
+    style: styles.moodRow
+  }, faces.map((f, i) => /*#__PURE__*/React.createElement("button", {
+    key: f,
+    onClick: () => setMood(i),
+    style: {
+      ...styles.moodBtn,
+      background: mood === i ? C.ink : "transparent",
+      color: mood === i ? C.yellow : C.muted,
+      borderColor: mood === i ? C.ink : C.line
+    },
+    "aria-label": f
+  }, /*#__PURE__*/React.createElement("span", {
+    style: {
+      fontSize: 18,
+      lineHeight: 1
+    }
+  }, glyph[i])))));
 }
 function SectionLabel({
   children
 }) {
-  return /*#__PURE__*/_jsxDEV("div", {
-    style: styles.sectionLabel,
-    children: children
-  }, void 0, false);
+  return /*#__PURE__*/React.createElement("div", {
+    style: styles.sectionLabel
+  }, children);
 }
 function Row({
   item,
@@ -680,92 +643,78 @@ function Row({
   locked,
   tag
 }) {
-  return /*#__PURE__*/_jsxDEV("div", {
+  return /*#__PURE__*/React.createElement("div", {
     style: {
       ...styles.row,
       opacity: locked && !checked ? 0.5 : 1
+    }
+  }, /*#__PURE__*/React.createElement("button", {
+    onClick: onToggle,
+    style: {
+      ...styles.check,
+      background: checked ? C.yellow : "transparent",
+      borderColor: checked ? C.yellowEdge : C.line
     },
-    children: [/*#__PURE__*/_jsxDEV("button", {
-      onClick: onToggle,
-      style: {
-        ...styles.check,
-        background: checked ? C.yellow : "transparent",
-        borderColor: checked ? C.yellowEdge : C.line
-      },
-      "aria-label": checked ? "Completed" : "Mark complete",
-      children: checked && /*#__PURE__*/_jsxDEV(Tick, {}, void 0, false)
-    }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-      style: {
-        flex: 1,
-        minWidth: 0
-      },
-      children: [/*#__PURE__*/_jsxDEV("div", {
-        style: {
-          ...styles.rowLabel,
-          textDecoration: checked ? "line-through" : "none",
-          color: checked ? C.muted : C.ink
-        },
-        children: item.label
-      }, void 0, false), /*#__PURE__*/_jsxDEV("button", {
-        style: styles.why,
-        onClick: onWhy,
-        children: "Why this is on the list"
-      }, void 0, false)]
-    }, void 0, true), tag && /*#__PURE__*/_jsxDEV("div", {
-      style: styles.tag,
-      children: tag
-    }, void 0, false), item.exc && !tag && /*#__PURE__*/_jsxDEV("div", {
-      style: styles.excDot,
-      title: "Has an exception rule"
-    }, void 0, false)]
-  }, void 0, true);
+    "aria-label": checked ? "Completed" : "Mark complete"
+  }, checked && /*#__PURE__*/React.createElement(Tick, null)), /*#__PURE__*/React.createElement("div", {
+    style: {
+      flex: 1,
+      minWidth: 0
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      ...styles.rowLabel,
+      textDecoration: checked ? "line-through" : "none",
+      color: checked ? C.muted : C.ink
+    }
+  }, item.label), /*#__PURE__*/React.createElement("button", {
+    style: styles.why,
+    onClick: onWhy
+  }, "Why this is on the list")), tag && /*#__PURE__*/React.createElement("div", {
+    style: styles.tag
+  }, tag), item.exc && !tag && /*#__PURE__*/React.createElement("div", {
+    style: styles.excDot,
+    title: "Has an exception rule"
+  }));
 }
 function Tick() {
-  return /*#__PURE__*/_jsxDEV("svg", {
+  return /*#__PURE__*/React.createElement("svg", {
     width: "14",
     height: "14",
     viewBox: "0 0 24 24",
-    fill: "none",
-    children: /*#__PURE__*/_jsxDEV("path", {
-      d: "M5 13l4 4L19 7",
-      stroke: C.ink,
-      strokeWidth: "3.5",
-      strokeLinecap: "round",
-      strokeLinejoin: "round"
-    }, void 0, false)
-  }, void 0, false);
+    fill: "none"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M5 13l4 4L19 7",
+    stroke: C.ink,
+    strokeWidth: "3.5",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }));
 }
 function WhySheet({
   item,
   onClose
 }) {
-  return /*#__PURE__*/_jsxDEV("div", {
+  return /*#__PURE__*/React.createElement("div", {
     style: styles.sheetScrim,
-    onClick: onClose,
-    children: /*#__PURE__*/_jsxDEV("div", {
-      style: styles.sheet,
-      onClick: e => e.stopPropagation(),
-      children: [/*#__PURE__*/_jsxDEV("div", {
-        style: styles.sheetHandle
-      }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-        style: styles.sheetTitle,
-        children: item.label
-      }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-        style: styles.sheetRef,
-        children: [item.domain ? `${item.domain} add-on` : `Core daily · ${item.ref}`, item.exc ? " · partial exception" : ""]
-      }, void 0, true), /*#__PURE__*/_jsxDEV("p", {
-        style: styles.sheetBody,
-        children: "This is where the relevant section of the free ebook loads inline — the science, the reasoning, and the exception rule for this item. It opens here, in the app, and you tap back to your list when you're done."
-      }, void 0, false), /*#__PURE__*/_jsxDEV("p", {
-        style: styles.sheetBodyMuted,
-        children: ["(Prototype placeholder. The real content is the ebook passage for ", item.ref || "this item", ".)"]
-      }, void 0, true), /*#__PURE__*/_jsxDEV("button", {
-        style: styles.sheetClose,
-        onClick: onClose,
-        children: "Back to today"
-      }, void 0, false)]
-    }, void 0, true)
-  }, void 0, false);
+    onClick: onClose
+  }, /*#__PURE__*/React.createElement("div", {
+    style: styles.sheet,
+    onClick: e => e.stopPropagation()
+  }, /*#__PURE__*/React.createElement("div", {
+    style: styles.sheetHandle
+  }), /*#__PURE__*/React.createElement("div", {
+    style: styles.sheetTitle
+  }, item.label), /*#__PURE__*/React.createElement("div", {
+    style: styles.sheetRef
+  }, item.domain ? `${item.domain} add-on` : `Core daily · ${item.ref}`, item.exc ? " · partial exception" : ""), /*#__PURE__*/React.createElement("p", {
+    style: styles.sheetBody
+  }, "This is where the relevant section of the free ebook loads inline — the science, the reasoning, and the exception rule for this item. It opens here, in the app, and you tap back to your list when you're done."), /*#__PURE__*/React.createElement("p", {
+    style: styles.sheetBodyMuted
+  }, "(Prototype placeholder. The real content is the ebook passage for ", item.ref || "this item", ".)"), /*#__PURE__*/React.createElement("button", {
+    style: styles.sheetClose,
+    onClick: onClose
+  }, "Back to today")));
 }
 function Celebration({
   complete,
@@ -795,134 +744,118 @@ function Celebration({
 
   // mini chain: show the last several days filling, with today as the new link
   const links = 9;
-  return /*#__PURE__*/_jsxDEV("div", {
-    style: styles.celebScrim,
-    children: /*#__PURE__*/_jsxDEV("div", {
-      style: styles.celebCard,
-      children: [big && /*#__PURE__*/_jsxDEV(FlushBurst, {}, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-        style: styles.celebMarkWrap,
-        children: /*#__PURE__*/_jsxDEV("div", {
-          style: {
-            ...styles.celebMark,
-            animation: big ? "pop 520ms cubic-bezier(.2,1.4,.4,1)" : "pop 420ms ease"
-          },
-          children: big ? /*#__PURE__*/_jsxDEV(BigTick, {}, void 0, false) : /*#__PURE__*/_jsxDEV(SmallCheck, {}, void 0, false)
-        }, void 0, false)
-      }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-        style: styles.celebHead,
-        children: headline
-      }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-        style: styles.celebLine,
-        children: line
-      }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-        style: styles.streakBlock,
-        children: [/*#__PURE__*/_jsxDEV("div", {
-          style: styles.streakBig,
-          children: [/*#__PURE__*/_jsxDEV("span", {
-            style: styles.streakBigNum,
-            children: shown
-          }, shown, false), /*#__PURE__*/_jsxDEV("span", {
-            style: styles.streakBigOf,
-            children: "/ 63"
-          }, void 0, false)]
-        }, void 0, true), /*#__PURE__*/_jsxDEV("div", {
-          style: styles.streakBigLabel,
-          children: "days, unbroken"
-        }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-          style: styles.chain,
-          children: Array.from({
-            length: links
-          }).map((_, i) => {
-            const isNew = i === links - 1;
-            const filled = i < links - 1 || phase === "settle" || !isNew;
-            return /*#__PURE__*/_jsxDEV("div", {
-              style: {
-                ...styles.link,
-                background: isNew && phase !== "enter" ? C.yellow : isNew ? "rgba(31,31,31,0.18)" : C.yellow,
-                transform: isNew && phase === "settle" ? "scale(1)" : isNew ? "scale(0.4)" : "scale(1)",
-                opacity: isNew && phase === "enter" ? 0.3 : 1
-              }
-            }, i, false);
-          })
-        }, void 0, false), big && /*#__PURE__*/_jsxDEV("div", {
-          style: styles.midHint,
-          children: "You're past day 21 — the part most people don't reach."
-        }, void 0, false)]
-      }, void 0, true), /*#__PURE__*/_jsxDEV("button", {
-        style: styles.celebDone,
-        onClick: onClose,
-        children: "Done"
-      }, void 0, false), /*#__PURE__*/_jsxDEV("button", {
-        style: styles.celebReset,
-        onClick: onReset,
-        children: "Reset the day (prototype)"
-      }, void 0, false)]
-    }, void 0, true)
-  }, void 0, false);
+  return /*#__PURE__*/React.createElement("div", {
+    style: styles.celebScrim
+  }, /*#__PURE__*/React.createElement("div", {
+    style: styles.celebCard
+  }, big && /*#__PURE__*/React.createElement(FlushBurst, null), /*#__PURE__*/React.createElement("div", {
+    style: styles.celebMarkWrap
+  }, /*#__PURE__*/React.createElement("div", {
+    style: {
+      ...styles.celebMark,
+      animation: big ? "pop 520ms cubic-bezier(.2,1.4,.4,1)" : "pop 420ms ease"
+    }
+  }, big ? /*#__PURE__*/React.createElement(BigTick, null) : /*#__PURE__*/React.createElement(SmallCheck, null))), /*#__PURE__*/React.createElement("div", {
+    style: styles.celebHead
+  }, headline), /*#__PURE__*/React.createElement("div", {
+    style: styles.celebLine
+  }, line), /*#__PURE__*/React.createElement("div", {
+    style: styles.streakBlock
+  }, /*#__PURE__*/React.createElement("div", {
+    style: styles.streakBig
+  }, /*#__PURE__*/React.createElement("span", {
+    style: styles.streakBigNum,
+    key: shown
+  }, shown), /*#__PURE__*/React.createElement("span", {
+    style: styles.streakBigOf
+  }, "/ 63")), /*#__PURE__*/React.createElement("div", {
+    style: styles.streakBigLabel
+  }, "days, unbroken"), /*#__PURE__*/React.createElement("div", {
+    style: styles.chain
+  }, Array.from({
+    length: links
+  }).map((_, i) => {
+    const isNew = i === links - 1;
+    const filled = i < links - 1 || phase === "settle" || !isNew;
+    return /*#__PURE__*/React.createElement("div", {
+      key: i,
+      style: {
+        ...styles.link,
+        background: isNew && phase !== "enter" ? C.yellow : isNew ? "rgba(31,31,31,0.18)" : C.yellow,
+        transform: isNew && phase === "settle" ? "scale(1)" : isNew ? "scale(0.4)" : "scale(1)",
+        opacity: isNew && phase === "enter" ? 0.3 : 1
+      }
+    });
+  })), big && /*#__PURE__*/React.createElement("div", {
+    style: styles.midHint
+  }, "You're past day 21 — the part most people don't reach.")), /*#__PURE__*/React.createElement("button", {
+    style: styles.celebDone,
+    onClick: onClose
+  }, "Done"), /*#__PURE__*/React.createElement("button", {
+    style: styles.celebReset,
+    onClick: onReset
+  }, "Reset the day (prototype)")));
 }
 function FlushBurst() {
   // tasteful, brand-coloured radial motes — not confetti spray
   const motes = Array.from({
     length: 14
   });
-  return /*#__PURE__*/_jsxDEV("div", {
+  return /*#__PURE__*/React.createElement("div", {
     style: styles.burstWrap,
-    "aria-hidden": true,
-    children: motes.map((_, i) => {
-      const angle = i / motes.length * Math.PI * 2;
-      const dist = 90 + i % 3 * 22;
-      return /*#__PURE__*/_jsxDEV("span", {
-        style: {
-          ...styles.mote,
-          "--dx": `${Math.cos(angle) * dist}px`,
-          "--dy": `${Math.sin(angle) * dist}px`,
-          background: i % 2 ? C.yellow : C.yellowEdge,
-          animationDelay: `${i % 5 * 30}ms`
-        }
-      }, i, false);
-    })
-  }, void 0, false);
+    "aria-hidden": true
+  }, motes.map((_, i) => {
+    const angle = i / motes.length * Math.PI * 2;
+    const dist = 90 + i % 3 * 22;
+    return /*#__PURE__*/React.createElement("span", {
+      key: i,
+      style: {
+        ...styles.mote,
+        "--dx": `${Math.cos(angle) * dist}px`,
+        "--dy": `${Math.sin(angle) * dist}px`,
+        background: i % 2 ? C.yellow : C.yellowEdge,
+        animationDelay: `${i % 5 * 30}ms`
+      }
+    });
+  }));
 }
 function BigTick() {
-  return /*#__PURE__*/_jsxDEV("svg", {
+  return /*#__PURE__*/React.createElement("svg", {
     width: "44",
     height: "44",
     viewBox: "0 0 24 24",
-    fill: "none",
-    children: /*#__PURE__*/_jsxDEV("path", {
-      d: "M5 13l4 4L19 7",
-      stroke: C.ink,
-      strokeWidth: "3.2",
-      strokeLinecap: "round",
-      strokeLinejoin: "round",
-      style: {
-        strokeDasharray: 24,
-        strokeDashoffset: 24,
-        animation: "draw 460ms 160ms ease forwards"
-      }
-    }, void 0, false)
-  }, void 0, false);
+    fill: "none"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M5 13l4 4L19 7",
+    stroke: C.ink,
+    strokeWidth: "3.2",
+    strokeLinecap: "round",
+    strokeLinejoin: "round",
+    style: {
+      strokeDasharray: 24,
+      strokeDashoffset: 24,
+      animation: "draw 460ms 160ms ease forwards"
+    }
+  }));
 }
 function SmallCheck() {
-  return /*#__PURE__*/_jsxDEV("svg", {
+  return /*#__PURE__*/React.createElement("svg", {
     width: "40",
     height: "40",
     viewBox: "0 0 24 24",
-    fill: "none",
-    children: /*#__PURE__*/_jsxDEV("path", {
-      d: "M5 13l4 4L19 7",
-      stroke: C.ink,
-      strokeWidth: "3",
-      strokeLinecap: "round",
-      strokeLinejoin: "round"
-    }, void 0, false)
-  }, void 0, false);
+    fill: "none"
+  }, /*#__PURE__*/React.createElement("path", {
+    d: "M5 13l4 4L19 7",
+    stroke: C.ink,
+    strokeWidth: "3",
+    strokeLinecap: "round",
+    strokeLinejoin: "round"
+  }));
 }
 function Caption() {
-  return /*#__PURE__*/_jsxDEV("div", {
-    style: styles.caption,
-    children: "Prototype · daily core loop · brand matched to the website. Tap items, watch the meter fill, log the day. Rebuild target: React Native."
-  }, void 0, false);
+  return /*#__PURE__*/React.createElement("div", {
+    style: styles.caption
+  }, "Prototype · daily core loop · brand matched to the website. Tap items, watch the meter fill, log the day. Rebuild target: React Native.");
 }
 const styles = {
   frame: {
