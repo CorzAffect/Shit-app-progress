@@ -304,8 +304,7 @@ var d=null!=c&&c.hydratedSources||null,e=!1,f="",g=aj;null!==c&&void 0!==c&&(!0=
 function(a,b,c){if(!Vd(b))throw Error(m(200));return Wd(null,a,b,!1,c)};Q.unmountComponentAtNode=function(a){if(!Vd(a))throw Error(m(40));return a._reactRootContainer?(yb(function(){Wd(null,null,a,!1,function(){a._reactRootContainer=null;a[Ja]=null})}),!0):!1};Q.unstable_batchedUpdates=Tf;Q.unstable_renderSubtreeIntoContainer=function(a,b,c,d){if(!Vd(c))throw Error(m(200));if(null==a||void 0===a._reactInternals)throw Error(m(38));return Wd(a,b,c,!1,d)};Q.version="18.3.1-next-f1338f8080-20240426"});
 })();
 </script>
-<script>import { jsxDEV as _jsxDEV } from "react/jsx-dev-runtime";
-const {
+<script>const {
   useState,
   useMemo,
   useEffect,
@@ -334,30 +333,26 @@ const STEPS = ["welcome", "about", "instructions", "commitment", "done"];
 function App() {
   const [step, setStep] = useState("welcome");
   const go = s => setStep(s);
-  return /*#__PURE__*/_jsxDEV("div", {
-    style: s.frame,
-    children: [/*#__PURE__*/_jsxDEV("style", {
-      children: css
-    }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-      style: s.phone,
-      children: [step === "welcome" && /*#__PURE__*/_jsxDEV(Welcome, {
-        onNext: () => go("about")
-      }, void 0, false), step === "about" && /*#__PURE__*/_jsxDEV(About, {
-        onNext: () => go("instructions"),
-        onBack: () => go("welcome")
-      }, void 0, false), step === "instructions" && /*#__PURE__*/_jsxDEV(Instructions, {
-        onNext: () => go("commitment"),
-        onBack: () => go("about")
-      }, void 0, false), step === "commitment" && /*#__PURE__*/_jsxDEV(Commitment, {
-        onNext: () => go("done"),
-        onBack: () => go("instructions")
-      }, void 0, false), step === "done" && /*#__PURE__*/_jsxDEV(Done, {
-        onRestart: () => go("welcome")
-      }, void 0, false)]
-    }, void 0, true), /*#__PURE__*/_jsxDEV(Caption, {
-      step: step
-    }, void 0, false)]
-  }, void 0, true);
+  return /*#__PURE__*/React.createElement("div", {
+    style: s.frame
+  }, /*#__PURE__*/React.createElement("style", null, css), /*#__PURE__*/React.createElement("div", {
+    style: s.phone
+  }, step === "welcome" && /*#__PURE__*/React.createElement(Welcome, {
+    onNext: () => go("about")
+  }), step === "about" && /*#__PURE__*/React.createElement(About, {
+    onNext: () => go("instructions"),
+    onBack: () => go("welcome")
+  }), step === "instructions" && /*#__PURE__*/React.createElement(Instructions, {
+    onNext: () => go("commitment"),
+    onBack: () => go("about")
+  }), step === "commitment" && /*#__PURE__*/React.createElement(Commitment, {
+    onNext: () => go("done"),
+    onBack: () => go("instructions")
+  }), step === "done" && /*#__PURE__*/React.createElement(Done, {
+    onRestart: () => go("welcome")
+  })), /*#__PURE__*/React.createElement(Caption, {
+    step: step
+  }));
 }
 
 /* ---------------- WELCOME ----------------
@@ -372,37 +367,30 @@ function Welcome({
     playFart();
     setTimeout(onNext, 950); // let the moment land
   }
-  return /*#__PURE__*/_jsxDEV("div", {
+  return /*#__PURE__*/React.createElement("div", {
     style: {
       ...s.screen,
       justifyContent: "center",
       textAlign: "center"
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: s.logoBig
+  }, /*#__PURE__*/React.createElement("span", {
+    style: s.logoBigText
+  }, "SHI")), /*#__PURE__*/React.createElement("h1", {
+    style: s.welcomeH
+  }, "We're all in this together."), /*#__PURE__*/React.createElement("p", {
+    style: s.welcomeSub
+  }, "Let's improve your shit, one day at a time."), /*#__PURE__*/React.createElement("button", {
+    style: {
+      ...s.cta,
+      ...(farted ? s.ctaFarted : {})
     },
-    children: [/*#__PURE__*/_jsxDEV("div", {
-      style: s.logoBig,
-      children: /*#__PURE__*/_jsxDEV("span", {
-        style: s.logoBigText,
-        children: "SHI"
-      }, void 0, false)
-    }, void 0, false), /*#__PURE__*/_jsxDEV("h1", {
-      style: s.welcomeH,
-      children: "We're all in this together."
-    }, void 0, false), /*#__PURE__*/_jsxDEV("p", {
-      style: s.welcomeSub,
-      children: "Let's improve your shit, one day at a time."
-    }, void 0, false), /*#__PURE__*/_jsxDEV("button", {
-      style: {
-        ...s.cta,
-        ...(farted ? s.ctaFarted : {})
-      },
-      onClick: start,
-      disabled: farted,
-      children: farted ? "💨  ...there it is." : "I'm ready, let's go"
-    }, void 0, false), /*#__PURE__*/_jsxDEV("p", {
-      style: s.welcomeFoot,
-      children: "Fair warning: this one opens with a fart. The science is real even if the name isn't."
-    }, void 0, false)]
-  }, void 0, true);
+    onClick: start,
+    disabled: farted
+  }, farted ? "💨  ...there it is." : "I'm ready, let's go"), /*#__PURE__*/React.createElement("p", {
+    style: s.welcomeFoot
+  }, "Fair warning: this one opens with a fart. The science is real even if the name isn't."));
 }
 
 /* ---------------- ABOUT YOU ----------------
@@ -415,77 +403,62 @@ function About({
   const [name, setName] = useState("");
   const [showMore, setShowMore] = useState(false);
   const selects = [["Age", ["Under 18", "18–24", "25–34", "35–44", "45–54", "55–64", "65+"]], ["Gender", ["Male", "Female", "Non-binary", "I use another term", "Prefer not to say"]], ["Relationship status", ["Single", "In a relationship", "Married or de facto", "Separated / Divorced", "Widowed", "Prefer not to say"]], ["Country", ["Australia", "New Zealand", "United Kingdom", "United States", "Canada", "Other"]], ["Area type", ["Capital / Major city", "Regional city or town", "Small town", "Rural or remote"]], ["Employment", ["Full-time", "Part-time or casual", "Self-employed", "Unemployed", "Student", "Homemaker / carer", "Retired", "Prefer not to say"]], ["Living situation", ["Alone", "With a partner", "Partner and children", "Children only", "With family", "With housemates", "Other"]], ["Dependent children", ["No", "Yes — 1", "Yes — 2", "Yes — 3 or more"]], ["Household income", ["Under $25k", "$25k–$50k", "$50k–$75k", "$75k–$100k", "$100k–$150k", "$150k–$200k", "$200k+", "Prefer not to say"]], ["General health", ["Excellent", "Good", "Fair", "Poor"]]];
-  return /*#__PURE__*/_jsxDEV("div", {
-    style: s.screen,
-    children: [/*#__PURE__*/_jsxDEV(ProgressDots, {
-      active: 1
-    }, void 0, false), /*#__PURE__*/_jsxDEV("h1", {
-      style: s.h1,
-      children: "First, what should we call you?"
-    }, void 0, false), /*#__PURE__*/_jsxDEV("p", {
-      style: s.lede,
-      children: "That's the only thing we actually need. The rest helps the research, but skip anything you like — no judgement."
-    }, void 0, false), /*#__PURE__*/_jsxDEV("label", {
-      style: s.label,
-      children: "Your name"
-    }, void 0, false), /*#__PURE__*/_jsxDEV("input", {
-      style: s.input,
-      value: name,
-      onChange: e => setName(e.target.value),
-      placeholder: "First name, nickname, whatever feels right"
-    }, void 0, false), /*#__PURE__*/_jsxDEV("label", {
-      style: s.label,
-      children: ["Email ", /*#__PURE__*/_jsxDEV("span", {
-        style: s.optional,
-        children: "— optional, for the occasional uncomfortable truth"
-      }, void 0, false)]
-    }, void 0, true), /*#__PURE__*/_jsxDEV("input", {
-      style: s.input,
-      placeholder: "you@email.com"
-    }, void 0, false), /*#__PURE__*/_jsxDEV("button", {
-      style: s.disclosure,
-      onClick: () => setShowMore(v => !v),
-      children: showMore ? "Hide the optional bits" : "A few optional questions for the research →"
-    }, void 0, false), showMore && /*#__PURE__*/_jsxDEV("div", {
-      style: s.moreWrap,
-      children: [/*#__PURE__*/_jsxDEV("p", {
-        style: s.researchNote,
-        children: "None of this is ever linked to you personally. We only ever see patterns across thousands of people. Answer what you want."
-      }, void 0, false), selects.map(([labelText, opts]) => /*#__PURE__*/_jsxDEV("div", {
-        style: {
-          marginBottom: 12
-        },
-        children: [/*#__PURE__*/_jsxDEV("label", {
-          style: s.labelSm,
-          children: labelText
-        }, void 0, false), /*#__PURE__*/_jsxDEV("select", {
-          style: s.select,
-          defaultValue: "",
-          children: [/*#__PURE__*/_jsxDEV("option", {
-            value: "",
-            children: ["Select", labelText === "Prefer not to say" ? "" : " (or skip)"]
-          }, void 0, true), opts.map(o => /*#__PURE__*/_jsxDEV("option", {
-            children: o
-          }, o, false))]
-        }, void 0, true)]
-      }, labelText, true))]
-    }, void 0, true), /*#__PURE__*/_jsxDEV("div", {
-      style: s.navRow,
-      children: [/*#__PURE__*/_jsxDEV("button", {
-        style: s.ghost,
-        onClick: onBack,
-        children: "Back"
-      }, void 0, false), /*#__PURE__*/_jsxDEV("button", {
-        style: {
-          ...s.next,
-          opacity: name ? 1 : 0.45,
-          pointerEvents: name ? "auto" : "none"
-        },
-        onClick: onNext,
-        children: "Continue"
-      }, void 0, false)]
-    }, void 0, true)]
-  }, void 0, true);
+  return /*#__PURE__*/React.createElement("div", {
+    style: s.screen
+  }, /*#__PURE__*/React.createElement(ProgressDots, {
+    active: 1
+  }), /*#__PURE__*/React.createElement("h1", {
+    style: s.h1
+  }, "First, what should we call you?"), /*#__PURE__*/React.createElement("p", {
+    style: s.lede
+  }, "That's the only thing we actually need. The rest helps the research, but skip anything you like — no judgement."), /*#__PURE__*/React.createElement("label", {
+    style: s.label
+  }, "Your name"), /*#__PURE__*/React.createElement("input", {
+    style: s.input,
+    value: name,
+    onChange: e => setName(e.target.value),
+    placeholder: "First name, nickname, whatever feels right"
+  }), /*#__PURE__*/React.createElement("label", {
+    style: s.label
+  }, "Email ", /*#__PURE__*/React.createElement("span", {
+    style: s.optional
+  }, "— optional, for the occasional uncomfortable truth")), /*#__PURE__*/React.createElement("input", {
+    style: s.input,
+    placeholder: "you@email.com"
+  }), /*#__PURE__*/React.createElement("button", {
+    style: s.disclosure,
+    onClick: () => setShowMore(v => !v)
+  }, showMore ? "Hide the optional bits" : "A few optional questions for the research →"), showMore && /*#__PURE__*/React.createElement("div", {
+    style: s.moreWrap
+  }, /*#__PURE__*/React.createElement("p", {
+    style: s.researchNote
+  }, "None of this is ever linked to you personally. We only ever see patterns across thousands of people. Answer what you want."), selects.map(([labelText, opts]) => /*#__PURE__*/React.createElement("div", {
+    key: labelText,
+    style: {
+      marginBottom: 12
+    }
+  }, /*#__PURE__*/React.createElement("label", {
+    style: s.labelSm
+  }, labelText), /*#__PURE__*/React.createElement("select", {
+    style: s.select,
+    defaultValue: ""
+  }, /*#__PURE__*/React.createElement("option", {
+    value: ""
+  }, "Select", labelText === "Prefer not to say" ? "" : " (or skip)"), opts.map(o => /*#__PURE__*/React.createElement("option", {
+    key: o
+  }, o)))))), /*#__PURE__*/React.createElement("div", {
+    style: s.navRow
+  }, /*#__PURE__*/React.createElement("button", {
+    style: s.ghost,
+    onClick: onBack
+  }, "Back"), /*#__PURE__*/React.createElement("button", {
+    style: {
+      ...s.next,
+      opacity: name ? 1 : 0.45,
+      pointerEvents: name ? "auto" : "none"
+    },
+    onClick: onNext
+  }, "Continue")));
 }
 
 /* ---------------- INSTRUCTIONS ----------------
@@ -494,71 +467,54 @@ function Instructions({
   onNext,
   onBack
 }) {
-  return /*#__PURE__*/_jsxDEV("div", {
-    style: s.screen,
-    children: [/*#__PURE__*/_jsxDEV(ProgressDots, {
-      active: 2
-    }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-      style: s.realBadge,
-      children: "SHIT IS ABOUT TO GET REAL"
-    }, void 0, false), /*#__PURE__*/_jsxDEV("h1", {
-      style: s.h1,
-      children: "Answer for the last 14 days."
-    }, void 0, false), /*#__PURE__*/_jsxDEV("p", {
-      style: s.lede,
-      children: "For each statement, use the 1–7 scale to show how true it's felt for you lately."
-    }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-      style: s.scaleCard,
-      children: /*#__PURE__*/_jsxDEV("div", {
-        style: s.scaleRow,
-        children: [/*#__PURE__*/_jsxDEV("span", {
-          style: s.scaleEnd,
-          children: ["1", /*#__PURE__*/_jsxDEV("br", {}, void 0, false), /*#__PURE__*/_jsxDEV("span", {
-            style: s.scaleEndLabel,
-            children: "Not at all"
-          }, void 0, false)]
-        }, void 0, true), /*#__PURE__*/_jsxDEV("div", {
-          style: s.scaleDots,
-          children: [1, 2, 3, 4, 5, 6, 7].map(n => /*#__PURE__*/_jsxDEV("div", {
-            style: {
-              ...s.scaleDot,
-              background: n === 4 ? C.yellow : "transparent",
-              borderColor: n === 4 ? C.ink : C.line
-            },
-            children: n
-          }, n, false))
-        }, void 0, false), /*#__PURE__*/_jsxDEV("span", {
-          style: s.scaleEnd,
-          children: ["7", /*#__PURE__*/_jsxDEV("br", {}, void 0, false), /*#__PURE__*/_jsxDEV("span", {
-            style: s.scaleEndLabel,
-            children: "Completely"
-          }, void 0, false)]
-        }, void 0, true)]
-      }, void 0, true)
-    }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-      style: s.tipBox,
-      children: [/*#__PURE__*/_jsxDEV("strong", {
-        style: {
-          color: C.ink
-        },
-        children: "Tip:"
-      }, void 0, false), " A 7 isn't a trophy — it's a truth. If you're unsure, pick the number that feels real, not ideal."]
-    }, void 0, true), /*#__PURE__*/_jsxDEV("p", {
-      style: s.lede,
-      children: "No wrong answers. Just honesty. It takes about 8 minutes."
-    }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-      style: s.navRow,
-      children: [/*#__PURE__*/_jsxDEV("button", {
-        style: s.ghost,
-        onClick: onBack,
-        children: "Back"
-      }, void 0, false), /*#__PURE__*/_jsxDEV("button", {
-        style: s.next,
-        onClick: onNext,
-        children: "I'm ready"
-      }, void 0, false)]
-    }, void 0, true)]
-  }, void 0, true);
+  return /*#__PURE__*/React.createElement("div", {
+    style: s.screen
+  }, /*#__PURE__*/React.createElement(ProgressDots, {
+    active: 2
+  }), /*#__PURE__*/React.createElement("div", {
+    style: s.realBadge
+  }, "SHIT IS ABOUT TO GET REAL"), /*#__PURE__*/React.createElement("h1", {
+    style: s.h1
+  }, "Answer for the last 14 days."), /*#__PURE__*/React.createElement("p", {
+    style: s.lede
+  }, "For each statement, use the 1–7 scale to show how true it's felt for you lately."), /*#__PURE__*/React.createElement("div", {
+    style: s.scaleCard
+  }, /*#__PURE__*/React.createElement("div", {
+    style: s.scaleRow
+  }, /*#__PURE__*/React.createElement("span", {
+    style: s.scaleEnd
+  }, "1", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("span", {
+    style: s.scaleEndLabel
+  }, "Not at all")), /*#__PURE__*/React.createElement("div", {
+    style: s.scaleDots
+  }, [1, 2, 3, 4, 5, 6, 7].map(n => /*#__PURE__*/React.createElement("div", {
+    key: n,
+    style: {
+      ...s.scaleDot,
+      background: n === 4 ? C.yellow : "transparent",
+      borderColor: n === 4 ? C.ink : C.line
+    }
+  }, n))), /*#__PURE__*/React.createElement("span", {
+    style: s.scaleEnd
+  }, "7", /*#__PURE__*/React.createElement("br", null), /*#__PURE__*/React.createElement("span", {
+    style: s.scaleEndLabel
+  }, "Completely")))), /*#__PURE__*/React.createElement("div", {
+    style: s.tipBox
+  }, /*#__PURE__*/React.createElement("strong", {
+    style: {
+      color: C.ink
+    }
+  }, "Tip:"), " A 7 isn't a trophy — it's a truth. If you're unsure, pick the number that feels real, not ideal."), /*#__PURE__*/React.createElement("p", {
+    style: s.lede
+  }, "No wrong answers. Just honesty. It takes about 8 minutes."), /*#__PURE__*/React.createElement("div", {
+    style: s.navRow
+  }, /*#__PURE__*/React.createElement("button", {
+    style: s.ghost,
+    onClick: onBack
+  }, "Back"), /*#__PURE__*/React.createElement("button", {
+    style: s.next,
+    onClick: onNext
+  }, "I'm ready")));
 }
 
 /* ---------------- COMMITMENT ----------------
@@ -570,114 +526,92 @@ function Commitment({
 }) {
   const [name, setName] = useState("");
   const agreements = [["Be impeccable with your word.", "You committed to 63 days. That means something."], ["Don't take anything personally.", "Your score isn't a verdict on you. The data is just data."], ["Don't make assumptions.", "You don't know yet what 63 days will do. That's why you're here."], ["Always do your best.", "Not perfect. Not every item every day. Just your best — which changes day to day, and that's fine."]];
-  return /*#__PURE__*/_jsxDEV("div", {
-    style: s.screen,
-    children: [/*#__PURE__*/_jsxDEV(ProgressDots, {
-      active: 3
-    }, void 0, false), /*#__PURE__*/_jsxDEV("h1", {
-      style: s.h1,
-      children: "Before we start."
-    }, void 0, false), /*#__PURE__*/_jsxDEV("p", {
-      style: s.lede,
-      children: "Four old agreements, borrowed from a small book that sold 50 million copies because it was true. Read them as a commitment to yourself — not rules for an app."
-    }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-      style: s.agList,
-      children: agreements.map(([t, d], i) => /*#__PURE__*/_jsxDEV("div", {
-        style: s.agItem,
-        children: [/*#__PURE__*/_jsxDEV("div", {
-          style: s.agNum,
-          children: i + 1
-        }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-          children: [/*#__PURE__*/_jsxDEV("div", {
-            style: s.agTitle,
-            children: t
-          }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-            style: s.agDesc,
-            children: d
-          }, void 0, false)]
-        }, void 0, true)]
-      }, i, true))
-    }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-      style: s.commitBlock,
-      children: [/*#__PURE__*/_jsxDEV("p", {
-        style: s.commitIntro,
-        children: "Nobody else will see your checklist. Nobody will know if you skip a day. This one's entirely yours."
-      }, void 0, false), /*#__PURE__*/_jsxDEV("div", {
-        style: s.commitLine,
-        children: ["I,\xA0", /*#__PURE__*/_jsxDEV("input", {
-          style: s.commitInput,
-          value: name,
-          onChange: e => setName(e.target.value),
-          placeholder: "your name"
-        }, void 0, false), ", am doing this for me."]
-      }, void 0, true)]
-    }, void 0, true), /*#__PURE__*/_jsxDEV("div", {
-      style: s.navRow,
-      children: [/*#__PURE__*/_jsxDEV("button", {
-        style: s.ghost,
-        onClick: onBack,
-        children: "Back"
-      }, void 0, false), /*#__PURE__*/_jsxDEV("button", {
-        style: {
-          ...s.next,
-          opacity: name ? 1 : 0.45,
-          pointerEvents: name ? "auto" : "none"
-        },
-        onClick: onNext,
-        children: "Let's go"
-      }, void 0, false)]
-    }, void 0, true)]
-  }, void 0, true);
+  return /*#__PURE__*/React.createElement("div", {
+    style: s.screen
+  }, /*#__PURE__*/React.createElement(ProgressDots, {
+    active: 3
+  }), /*#__PURE__*/React.createElement("h1", {
+    style: s.h1
+  }, "Before we start."), /*#__PURE__*/React.createElement("p", {
+    style: s.lede
+  }, "Four old agreements, borrowed from a small book that sold 50 million copies because it was true. Read them as a commitment to yourself — not rules for an app."), /*#__PURE__*/React.createElement("div", {
+    style: s.agList
+  }, agreements.map(([t, d], i) => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: s.agItem
+  }, /*#__PURE__*/React.createElement("div", {
+    style: s.agNum
+  }, i + 1), /*#__PURE__*/React.createElement("div", null, /*#__PURE__*/React.createElement("div", {
+    style: s.agTitle
+  }, t), /*#__PURE__*/React.createElement("div", {
+    style: s.agDesc
+  }, d))))), /*#__PURE__*/React.createElement("div", {
+    style: s.commitBlock
+  }, /*#__PURE__*/React.createElement("p", {
+    style: s.commitIntro
+  }, "Nobody else will see your checklist. Nobody will know if you skip a day. This one's entirely yours."), /*#__PURE__*/React.createElement("div", {
+    style: s.commitLine
+  }, "I,\xA0", /*#__PURE__*/React.createElement("input", {
+    style: s.commitInput,
+    value: name,
+    onChange: e => setName(e.target.value),
+    placeholder: "your name"
+  }), ", am doing this for me.")), /*#__PURE__*/React.createElement("div", {
+    style: s.navRow
+  }, /*#__PURE__*/React.createElement("button", {
+    style: s.ghost,
+    onClick: onBack
+  }, "Back"), /*#__PURE__*/React.createElement("button", {
+    style: {
+      ...s.next,
+      opacity: name ? 1 : 0.45,
+      pointerEvents: name ? "auto" : "none"
+    },
+    onClick: onNext
+  }, "Let's go")));
 }
 function Done({
   onRestart
 }) {
-  return /*#__PURE__*/_jsxDEV("div", {
+  return /*#__PURE__*/React.createElement("div", {
     style: {
       ...s.screen,
       justifyContent: "center",
       textAlign: "center"
-    },
-    children: [/*#__PURE__*/_jsxDEV("div", {
-      style: s.logoBig,
-      children: /*#__PURE__*/_jsxDEV("span", {
-        style: s.logoBigText,
-        children: "SHI"
-      }, void 0, false)
-    }, void 0, false), /*#__PURE__*/_jsxDEV("h1", {
-      style: s.h1,
-      children: "That's the setup done."
-    }, void 0, false), /*#__PURE__*/_jsxDEV("p", {
-      style: s.lede,
-      children: "From here you'd land in the test, then your daily checklist — the loop you've already seen. Setup should feel like a weight off, not a form survived."
-    }, void 0, false), /*#__PURE__*/_jsxDEV("button", {
-      style: s.cta,
-      onClick: onRestart,
-      children: "Replay the intro"
-    }, void 0, false)]
-  }, void 0, true);
+    }
+  }, /*#__PURE__*/React.createElement("div", {
+    style: s.logoBig
+  }, /*#__PURE__*/React.createElement("span", {
+    style: s.logoBigText
+  }, "SHI")), /*#__PURE__*/React.createElement("h1", {
+    style: s.h1
+  }, "That's the setup done."), /*#__PURE__*/React.createElement("p", {
+    style: s.lede
+  }, "From here you'd land in the test, then your daily checklist — the loop you've already seen. Setup should feel like a weight off, not a form survived."), /*#__PURE__*/React.createElement("button", {
+    style: s.cta,
+    onClick: onRestart
+  }, "Replay the intro"));
 }
 function ProgressDots({
   active
 }) {
-  return /*#__PURE__*/_jsxDEV("div", {
-    style: s.dots,
-    children: [0, 1, 2, 3].map(i => /*#__PURE__*/_jsxDEV("div", {
-      style: {
-        ...s.dot,
-        background: i <= active ? C.ink : C.line,
-        width: i === active ? 22 : 7
-      }
-    }, i, false))
-  }, void 0, false);
+  return /*#__PURE__*/React.createElement("div", {
+    style: s.dots
+  }, [0, 1, 2, 3].map(i => /*#__PURE__*/React.createElement("div", {
+    key: i,
+    style: {
+      ...s.dot,
+      background: i <= active ? C.ink : C.line,
+      width: i === active ? 22 : 7
+    }
+  })));
 }
 function Caption({
   step
 }) {
-  return /*#__PURE__*/_jsxDEV("div", {
-    style: s.caption,
-    children: ["First-run flow · ", STEPS.indexOf(step) + 1, " of ", STEPS.length, " · built on “relief and agency.” Tap through: welcome → about you → the scale → commitment."]
-  }, void 0, true);
+  return /*#__PURE__*/React.createElement("div", {
+    style: s.caption
+  }, "First-run flow · ", STEPS.indexOf(step) + 1, " of ", STEPS.length, " · built on “relief and agency.” Tap through: welcome → about you → the scale → commitment.");
 }
 
 /* simple synthesized "fart" via WebAudio so the tone-setter actually fires */
