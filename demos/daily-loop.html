@@ -428,41 +428,130 @@ const ADDONS = [{
   domain: "Mindfulness"
 }];
 const ALL = [...CORE_DAILY, ...ADDONS];
-const STREAK_START = 22; // pretend the user is mid-programme, in the hard middle
 
+/* ---- real day/streak persistence (localStorage in the PWA; memory fallback) ---- */
+const memoryStore = {};
+const store = {
+  get(k) {
+    try {
+      return window.localStorage.getItem(k);
+    } catch (e) {
+      return memoryStore[k] ?? null;
+    }
+  },
+  set(k, v) {
+    try {
+      window.localStorage.setItem(k, v);
+    } catch (e) {
+      memoryStore[k] = v;
+    }
+  },
+  clear(k) {
+    try {
+      window.localStorage.removeItem(k);
+    } catch (e) {
+      delete memoryStore[k];
+    }
+  }
+};
+const KEY = "shit_demo_v1";
+function dateWithOffset(offset) {
+  const d = new Date();
+  d.setDate(d.getDate() + (offset || 0));
+  return d.toLocaleDateString("en-CA"); // YYYY-MM-DD
+}
+function daysBetween(a, b) {
+  return Math.round((new Date(b) - new Date(a)) / 86400000);
+}
+function loadState() {
+  try {
+    return JSON.parse(store.get(KEY));
+  } catch (e) {
+    return null;
+  }
+}
+// New calendar day: fresh checklist. Miss a full day and the chain resets.
+function rollover(s) {
+  const base = s || {
+    streak: 0,
+    lastFullDate: null,
+    dayOffset: 0,
+    date: null,
+    checked: [],
+    mood: null,
+    committed: false,
+    confirm: ""
+  };
+  const today = dateWithOffset(base.dayOffset);
+  if (base.date === today) return base;
+  let streak = base.streak;
+  if (streak > 0 && base.lastFullDate && daysBetween(base.lastFullDate, today) > 1) streak = 0;
+  return {
+    ...base,
+    streak,
+    date: today,
+    checked: [],
+    mood: null,
+    committed: false,
+    confirm: ""
+  };
+}
 const CONFIRMATIONS = ["Done. See you tomorrow.", "That's one more day in the bank.", "Good work. Rest up."];
 function App() {
-  const [checked, setChecked] = useState(() => new Set());
-  const [mood, setMood] = useState(null);
-  const [committed, setCommitted] = useState(false); // day logged
-  const [confirm, setConfirm] = useState("");
+  const [state, setState] = useState(() => rollover(loadState()));
   const [openWhy, setOpenWhy] = useState(null);
   const [celebrate, setCelebrate] = useState(false); // overlay visible
 
+  useEffect(() => {
+    store.set(KEY, JSON.stringify(state));
+  }, [state]);
+  const checked = new Set(state.checked);
+  const {
+    mood,
+    committed,
+    confirm,
+    streak
+  } = state;
+  const setMood = m => setState(st => ({
+    ...st,
+    mood: m
+  }));
   const total = ALL.length;
   const done = checked.size;
   const pct = Math.round(done / total * 100);
   const complete = done === total;
   function toggle(id) {
     if (committed) return;
-    setChecked(prev => {
-      const next = new Set(prev);
-      next.has(id) ? next.delete(id) : next.add(id);
-      return next;
+    setState(st => {
+      const ids = st.checked.includes(id) ? st.checked.filter(x => x !== id) : [...st.checked, id];
+      return {
+        ...st,
+        checked: ids
+      };
     });
   }
   function logDay() {
-    setConfirm(CONFIRMATIONS[Math.floor(Math.random() * CONFIRMATIONS.length)]);
-    setCommitted(true);
+    setState(st => ({
+      ...st,
+      committed: true,
+      confirm: CONFIRMATIONS[Math.floor(Math.random() * CONFIRMATIONS.length)],
+      streak: complete ? st.streak + 1 : st.streak,
+      lastFullDate: complete ? st.date : st.lastFullDate
+    }));
     setCelebrate(true);
   }
-  function reset() {
-    setChecked(new Set());
-    setMood(null);
-    setCommitted(false);
+  function nextDay() {
     setCelebrate(false);
+    setState(st => rollover({
+      ...st,
+      dayOffset: (st.dayOffset || 0) + 1
+    }));
   }
-  const streak = committed ? STREAK_START + 1 : STREAK_START;
+  function resetDemo() {
+    setCelebrate(false);
+    store.clear(KEY);
+    setState(rollover(null));
+  }
   return /*#__PURE__*/React.createElement("div", {
     style: styles.frame
   }, /*#__PURE__*/React.createElement("style", null, css), /*#__PURE__*/React.createElement("div", {
@@ -512,16 +601,24 @@ function App() {
       pointerEvents: done > 0 ? "auto" : "none"
     },
     onClick: logDay
-  }, complete ? "Log today — full flush" : `Log today (${done}/${total})`) : /*#__PURE__*/React.createElement("div", {
+  }, complete ? "Log today - full flush" : `Log today (${done}/${total})`) : /*#__PURE__*/React.createElement("div", {
     style: styles.confirmWrap
   }, /*#__PURE__*/React.createElement("div", {
     style: styles.confirmText
   }, confirm), /*#__PURE__*/React.createElement("div", {
     style: styles.confirmSub
-  }, "Day ", streak, " of 63 logged · streak intact"), /*#__PURE__*/React.createElement("button", {
+  }, complete ? `Day ${streak} of 63 banked` : `Logged - the chain stays at ${streak}`), /*#__PURE__*/React.createElement("button", {
     style: styles.replay,
     onClick: () => setCelebrate(true)
-  }, "Replay celebration")))), openWhy && /*#__PURE__*/React.createElement(WhySheet, {
+  }, "Replay celebration")), /*#__PURE__*/React.createElement("div", {
+    style: styles.demoRow
+  }, /*#__PURE__*/React.createElement("button", {
+    style: styles.demoBtn,
+    onClick: nextDay
+  }, "demo: next day →"), /*#__PURE__*/React.createElement("button", {
+    style: styles.demoBtn,
+    onClick: resetDemo
+  }, "reset demo")))), openWhy && /*#__PURE__*/React.createElement(WhySheet, {
     item: openWhy,
     onClose: () => setOpenWhy(null)
   }), celebrate && /*#__PURE__*/React.createElement(Celebration, {
@@ -530,7 +627,7 @@ function App() {
     total: total,
     streak: streak,
     onClose: () => setCelebrate(false),
-    onReset: reset
+    onReset: resetDemo
   }), /*#__PURE__*/React.createElement(Caption, null));
 }
 function Header({
@@ -725,7 +822,7 @@ function Celebration({
   onReset
 }) {
   // streak counts up from previous to current on mount
-  const [shown, setShown] = useState(streak - 1);
+  const [shown, setShown] = useState(complete ? streak - 1 : streak);
   const [phase, setPhase] = useState("enter"); // enter -> settle
 
   useEffect(() => {
@@ -786,7 +883,7 @@ function Celebration({
         opacity: isNew && phase === "enter" ? 0.3 : 1
       }
     });
-  })), big && /*#__PURE__*/React.createElement("div", {
+  })), big && streak > 21 && /*#__PURE__*/React.createElement("div", {
     style: styles.midHint
   }, "You're past day 21 — the part most people don't reach.")), /*#__PURE__*/React.createElement("button", {
     style: styles.celebDone,
@@ -794,7 +891,7 @@ function Celebration({
   }, "Done"), /*#__PURE__*/React.createElement("button", {
     style: styles.celebReset,
     onClick: onReset
-  }, "Reset the day (prototype)")));
+  }, "Reset demo data")));
 }
 function FlushBurst() {
   // tasteful, brand-coloured radial motes — not confetti spray
@@ -1152,6 +1249,22 @@ const styles = {
     fontSize: 12,
     marginTop: 4
   },
+  demoRow: {
+    display: "flex",
+    justifyContent: "center",
+    gap: 16,
+    marginTop: 8
+  },
+  demoBtn: {
+    background: "none",
+    border: "none",
+    color: C.muted,
+    fontSize: 10.5,
+    fontWeight: 700,
+    cursor: "pointer",
+    fontFamily: "inherit",
+    textDecoration: "underline"
+  },
   replay: {
     marginTop: 10,
     background: "transparent",
@@ -1416,4 +1529,4 @@ ReactDOM.createRoot(document.getElementById('root')).render(React.createElement(
 Add this to your home screen to use it like the real app: tap <span style="display:inline-block;transform:translateY(2px)">&#x2191;</span> Share, then "Add to Home Screen."
 <span id="a2hs-x" style="float:right;color:#9A9485;font-weight:800;cursor:pointer;padding-left:8px">&#x2715;</span></div>
 <script>(function(){var i=/iphone|ipad|ipod/i.test(navigator.userAgent);var s=('standalone' in navigator)&&navigator.standalone;if(i&&!s){var b=document.getElementById('a2hs');if(b){b.style.display='block';document.getElementById('a2hs-x').onclick=function(){b.style.display='none';};}}})();</script>
-</body></html>
+</body></html>`
